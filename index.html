@@ -40,7 +40,12 @@ h3{margin:2px 0 8px;font-size:14px;color:var(--mu);font-weight:600;text-transfor
 .inbox .pre,.inbox .unit{color:var(--mu);font-size:14px}
 input.num{flex:1;min-width:0;width:100%;background:none;border:0;color:var(--tx);font:inherit;font-size:16px;padding:8px 4px;text-align:right;outline:none}
 select{font:inherit;font-size:15px;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:8px;max-width:60%}
-input[type=range]{width:100%;margin:10px 0 2px;accent-color:var(--ac);height:22px}
+.rng{position:relative;touch-action:pan-y;padding:2px 0}
+.rng input[type=range]{pointer-events:none;-webkit-appearance:none;appearance:none;background:transparent;width:100%;height:32px;margin:4px 0 0;display:block;--p:0%}
+.rng input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(to right,var(--ac) var(--p),var(--bd) var(--p))}
+.rng input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--ac);margin-top:-11px;border:4px solid var(--card);box-shadow:0 0 0 1px var(--ac);transition:transform .1s}
+.rng.drag input[type=range]::-webkit-slider-thumb{transform:scale(1.25)}
+.rng input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--ac);border:3px solid var(--card)}
 .relink{display:none;padding:2px 8px;font-size:13px;color:var(--ac2);border-color:transparent;background:none}
 .relink.show{display:inline-block}
 .seg{display:flex;border:1px solid var(--bd);border-radius:9px;overflow:hidden}
@@ -90,6 +95,7 @@ th{color:var(--mu);font-weight:600}
 <body>
 <header>
   <div class="ttl"><b>Mortgage Calc</b><span id="scnName"></span></div>
+  <button id="btnPdf">PDF</button>
   <button id="btnSaves">Saves</button>
   <button id="btnSet" aria-label="Settings">&#9881;</button>
 </header>
@@ -232,7 +238,7 @@ function parse(s){s=String(s).replace(/[^0-9.\-]/g,'');const n=parseFloat(s);ret
 function F(k,label){const f=FD[k];const unit=f.t==='$'?'':`<span class="unit">${f.t==='yrs'?'yrs':f.t==='mo'?'mo':'%'}</span>`;
   return `<div class="fld"><div class="frow"><label>${label||f.l}</label>${DEFS[k]?`<button class="relink" data-relink="${k}">&#8634;</button>`:''}
   <div class="inbox">${f.t==='$'?'<span class="pre">$</span>':''}<input class="num" data-k="${k}" inputmode="decimal" autocomplete="off">${unit}</div></div>
-  ${f.ns?'':`<input type="range" data-k="${k}" min="${f.min}" max="${f.max}" step="${f.st}">`}</div>`}
+  ${f.ns?'':`<div class="rng"><input type="range" data-k="${k}" min="${f.min}" max="${f.max}" step="${f.st}" tabindex="-1"></div>`}</div>`}
 function DOWN(){return `<div class="fld" style="border-bottom:0;padding-bottom:0"><div class="frow"><label>Down payment as</label>
   <div class="seg"><button data-dm="pct">%</button><button data-dm="amt">$</button></div></div></div>
   <div data-show="dmPct">${F('downPct')}</div><div data-show="dmAmt">${F('downAmt')}</div><div class="hint" data-o="downHint"></div>`}
@@ -368,7 +374,7 @@ function refresh(){
     if(el.type==='checkbox'){el.checked=!!S[k];return}
     if(el.tagName==='SELECT'){el.value=v(k);return}
     const x=v(k);
-    if(el.type==='range'){const f=FD[k];if(f.mx)el.max=Math.max(f.min,Math.round(f.mx()));el.value=x;return}
+    if(el.type==='range'){const f=FD[k];if(f.mx)el.max=Math.max(f.min,Math.round(f.mx()));el.value=x;const mn=+el.min,mxx=+el.max;el.style.setProperty('--p',(mxx>mn?(el.value-mn)/(mxx-mn)*100:0)+'%');return}
     if(el===document.activeElement)return;el.value=fmtIn(k,x)});
   document.querySelectorAll('[data-relink]').forEach(b=>b.classList.toggle('show',!!S.own[b.dataset.relink]));
   document.querySelectorAll('[data-o]').forEach(el=>{const o=O[el.dataset.o];if(typeof o==='string')el.textContent=o});
@@ -417,6 +423,9 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
   if(b.id==='schedBtn'){S.sched=!S.sched;refresh();return}
   if(b.id==='btnSet'){openSettings();return}
   if(b.id==='btnSaves'){openSaves();return}
+  if(b.id==='btnPdf'){makePdf();return}
+  if(b.id==='pdfShare'){sharePdf();return}
+  if(b.id==='pdfSave'){savePdf();return}
   if(b.dataset.close!=null){closeSheet();return}
   if(b.id==='doSave'){doSave();return}
   if(b.dataset.load){loadSave(b.dataset.load);return}
@@ -453,6 +462,129 @@ function doSave(){const n=document.getElementById('saveName').value.trim();if(!n
   const sv=saves();if(sv[n]&&n!==S.name&&!confirm('Overwrite "'+n+'"?'))return;S.name=n;sv[n]={t:Date.now(),s:JSON.parse(JSON.stringify(S))};LS.set('mmc.saves',sv);refresh();LS.set('mmc.cur',S);openSaves()}
 function loadSave(n){const sv=saves();if(!sv[n])return;const t=S.tab;S=Object.assign(DEF_S(),JSON.parse(JSON.stringify(sv[n].s)));S.tab=t;S.name=n;renderItems();closeSheet();refresh()}
 function delSave(n){if(!confirm('Delete "'+n+'"?'))return;const sv=saves();delete sv[n];LS.set('mmc.saves',sv);openSaves()}
+
+/* ---------- sliders: only move when the knob is grabbed ---------- */
+const TW=28;let drag=null;
+function thumbX(r){const b=r.getBoundingClientRect(),mn=+r.min,mx=+r.max,p=mx>mn?(r.value-mn)/(mx-mn):0;return b.left+TW/2+p*(b.width-TW)}
+function rngStart(x,w){const r=w.querySelector('input[type=range]');if(!r||Math.abs(x-thumbX(r))>26)return false;drag={r,w};w.classList.add('drag');return true}
+function rngMove(x){if(!drag)return;const r=drag.r,b=r.getBoundingClientRect(),mn=+r.min,mx=+r.max,st=+r.step||1;
+  let p=(x-b.left-TW/2)/(b.width-TW);p=Math.min(1,Math.max(0,p));let val=Math.round(p*(mx-mn)/st)*st+mn;val=Math.min(mx,+val.toFixed(4));
+  if(+r.value!==val){r.value=val;r.dispatchEvent(new Event('input',{bubbles:true}))}}
+function rngEnd(){if(drag){drag.w.classList.remove('drag');drag=null}}
+document.addEventListener('touchstart',e=>{const w=e.target.closest&&e.target.closest('.rng');if(w&&e.touches.length===1&&rngStart(e.touches[0].clientX,w))e.preventDefault()},{passive:false});
+document.addEventListener('touchmove',e=>{if(drag){e.preventDefault();rngMove(e.touches[0].clientX)}},{passive:false});
+document.addEventListener('touchend',rngEnd);document.addEventListener('touchcancel',rngEnd);
+document.addEventListener('mousedown',e=>{const w=e.target.closest&&e.target.closest('.rng');if(w&&rngStart(e.clientX,w))e.preventDefault()});
+document.addEventListener('mousemove',e=>{if(drag)rngMove(e.clientX)});document.addEventListener('mouseup',rngEnd);
+
+/* ---------- client PDF ---------- */
+let lastPdf=null;
+function loadPdfLib(){if(window.jspdf)return Promise.resolve();return new Promise((ok,no)=>{const s=document.createElement('script');s.src='jspdf.min.js';s.onload=ok;s.onerror=()=>no(new Error('PDF tool did not load. Check your connection.'));document.head.appendChild(s)})}
+async function makePdf(){const b=document.getElementById('btnPdf');b.textContent='...';b.disabled=true;
+  try{await loadPdfLib();const sp=pdfSpec(),doc=renderPdf(sp);
+    const fname=('Mack Mortgages - '+sp.title+(S.name?' - '+S.name:'')).replace(/[\\/:*?"<>|]/g,'')+'.pdf';
+    lastPdf=new File([doc.output('blob')],fname,{type:'application/pdf'});
+    const canShare=!!(navigator.canShare&&navigator.canShare({files:[lastPdf]}));
+    openSheet(`<div class="phead"><b>PDF ready</b><button data-close>Done</button></div><div class="note" style="margin-bottom:6px">${esc(fname)}</div>
+      ${S.name?'':'<div class="warn">No client name on it. Save the scenario under the client\'s name first if you want "Prepared for" on the PDF.</div>'}
+      <div class="row">${canShare?'<button class="pri" id="pdfShare" style="flex:1">Send / Share</button>':''}<button id="pdfSave" style="flex:1">Save to phone</button></div>`)}
+  catch(e){alert('Could not make the PDF. '+e.message)}
+  finally{b.textContent='PDF';b.disabled=false}}
+function sharePdf(){if(!lastPdf)return;navigator.share({files:[lastPdf],title:lastPdf.name}).catch(()=>{})}
+function savePdf(){if(!lastPdf)return;const u=URL.createObjectURL(lastPdf),a=document.createElement('a');a.href=u;a.download=lastPdf.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+
+function pdfSpec(){
+  const {O}=compute(),d=deal(),t=S.tab,R=(l,x)=>[l,x],rate=pc(S.rate),am=S.amort+' years',fq=FREQ[S.freq].l;
+  const gen='These numbers are estimates to help you plan. They are not a mortgage approval, and rates are not guaranteed. Final numbers depend on the lender and your full application.';
+  const prem=d.insured?[R('Mortgage insurance premium (added to the mortgage)',O.prem)]:[];
+  const sp={title:'',hero:[],sections:[],table:null,notes:[gen]};
+  if(t==='pay'){sp.title='Mortgage Payment';
+    sp.hero=[[fq+' payment',O.pay,'On a mortgage of '+O.loan+' at '+rate],['Balance at renewal',O.tBal,'After your '+S.term+'-year term']];
+    sp.sections=[{h:'Your mortgage',rows:[R('Purchase price',$(d.price)),R('Down payment',O.bDown),...prem,R('Total mortgage',O.loan),R('Interest rate',rate),R('Amortization',am),R('Term',S.term+' years'),R('Payment frequency',fq),R('Payment',O.pay)]},
+      {h:'Over your '+S.term+'-year term',rows:[R('Interest paid',O.tInt),R('Principal paid off',O.tPrin),R('Balance at renewal',O.tBal)]},
+      {h:'Over the full amortization',rows:[R('Total interest',O.aInt),R('Paid off in',O.aYrs)]}];
+    sp.table={h:'Year by year',head:['Year','Interest','Principal','Balance'],rows:O._years.map(y=>[String(y.y),$(y.i),$(y.p),$(y.b)])};
+    sp.notes=['Assumes the same rate for the full amortization. Your rate is reset at each renewal.',gen]}
+  else if(t==='stress'){const q=ratios(d.loan,S.rate,S.amort),pass=q.gOk&&q.tOk;sp.title='Stress Test';
+    sp.hero=[['Qualifying payment (monthly)',O.qPmt,'Tested at '+O.qRate],['Result',pass?'Meets limits':'Over limits','GDS '+O.gds+'   TDS '+O.tds]];
+    sp.sections=[{h:'How the stress test works',text:SET.ovOn?'Lenders check that you can afford the payment at a qualifying rate of '+pc(SET.ovRate)+'.':'Lenders check that you can afford the payment at the higher of your rate plus '+SET.buffer+'% or '+pc(SET.floor)+'. Your rate is '+rate+', so you are tested at '+O.qRate+'.'},
+      {h:'Your numbers',rows:[R('Gross yearly income',$(+S.income)),R('Monthly debt payments',$(q.debts)),...(q.rent>0?[R('Rental income (monthly)',$(q.rent))]:[]),R('Property tax (yearly)',$(+S.ptax)),R('Heat (monthly)',$(q.heat)),R('Strata fee (monthly)',$(+S.strata)),R('Mortgage',O.loan),R('Amortization',am)]},
+      {h:'Results',rows:[R('Your payment at '+rate+' (monthly)',O.cPmt),R('Qualifying payment at '+O.qRate,O.qPmt),R('GDS: housing costs vs income',O.gds+' of '+O.gl+' max'),R('TDS: housing costs plus debts vs income',O.tds+' of '+O.tl+' max'),R('Max mortgage with these numbers',O.maxLoan)]}];
+    sp.notes=['Housing costs are the qualifying payment, property tax, heat and '+SET.strataPct+'% of strata fees. Lender rules can vary.',gen]}
+  else if(t==='buy'){const q=ratios(d.loan,S.rate,S.amort);sp.title='Purchase Summary';
+    sp.hero=[['Estimated all-in monthly cost',O.allIn,'Mortgage, property tax, strata and heat'],['Cash needed to close',O.cash,'Down payment plus closing costs']];
+    sp.sections=[{h:'Monthly costs',rows:[R('Mortgage payment',O.bPI),R('Property tax',O.bTax),R('Strata fee',O.bStr),R('Heat / utilities',O.bHeat),R('Total',O.allIn),...(q.rent>0?[R('Rental income',$c(q.rent)),R('Total after rental income',O.bNet)]:[])]},
+      {h:'The purchase',rows:[R('Purchase price',$(d.price)),R('Down payment',O.bDown),...prem,R('Total mortgage',O.loan),R('Interest rate',rate),R('Amortization',am)]},
+      {h:'Qualifying',rows:[R('Gross yearly income',$(+S.income)),R('Monthly debt payments',$(q.debts)),R('Qualifying rate',O.qRate),R('GDS (limit)',O.gdsL),R('TDS (limit)',O.tdsL),R('Max mortgage with these numbers',O.maxLoan)]},
+      {h:'Cash to close',rows:[R('Down payment',$(d.down)),R('Closing costs (estimate)',O.clTot),R('Total',O.cash)]}];
+    sp.notes=['Closing costs include property transfer tax and other estimated costs. Tax figures are estimates only and are not tax or legal advice. Please confirm with your lawyer or notary.',gen]}
+  else if(t==='close'){sp.title='Closing Costs';
+    sp.hero=[['Estimated closing costs',O.clTot,'Not including your down payment'],['Cash needed to close',O.cash,'Includes your '+$(d.down)+' down payment']];
+    const ptt=[R('Property transfer tax',O.ptt)];if(O.exOn)ptt.push(R(O.exLbl,O.ex));ptt.push(R('Property transfer tax payable',O.pttNet));
+    sp.sections=[{h:'The purchase',rows:[R('Purchase price',$(d.price)),R('First-time home buyer',S.fthb?'Yes':'No'),R('Newly built home',S.newBuild?'Yes':'No')]},{h:'Property transfer tax',rows:ptt}];
+    if(S.newBuild&&S.gstOn)sp.sections.push({h:'GST (new home)',rows:[R('GST',$(+v('gstAmt'))),...(+S.gstRebate?[R('GST rebate','-'+$(+S.gstRebate))]:[])]});
+    const it=S.closing.filter(x=>+x.a).map(x=>R(x.n,$(+x.a)));if(it.length)sp.sections.push({h:'Other costs',rows:it});
+    sp.sections.push({h:'Total',rows:[R('Closing costs',O.clTot),R('Down payment',$(d.down)),R('Cash needed to close',O.cash)]});
+    sp.notes=['Property transfer tax and GST figures are estimates only and are not tax or legal advice. Please confirm with your lawyer or notary.',gen]}
+  else if(t==='refi'){sp.title='Refinance Options';
+    sp.hero=[['Net savings this term (break and save)',O.bsNet,'After the penalty and fees'],['Cash out (equity takeout)',O.eqCash,'After paying off the current mortgage'+(+S.rDebts?' and debts':'')]];
+    sp.sections=[{h:'Your current mortgage',rows:[R('Home value',$(+v('rValue'))),R('Mortgage balance',$(+v('rBal'))),R('Current rate',pc(v('rCurRate'))),R('Months left in term',String(v('rMonths'))),R('Current monthly payment',$c(+v('rCurPmt')))]},
+      {h:'Option 1: break early for a lower rate',rows:[R('Estimated penalty',O.pen),R('New rate',pc(v('rRate'))),R('Interest saved over the rest of the term',O.bsSave),...(+S.rFees?[R('Legal / appraisal / fees',$(+S.rFees))]:[]),R('Net savings',O.bsNet),R('Monthly payment change',O.bsPmt),R('Break-even',O.bsBE)]},
+      {h:'Option 2: take out equity',rows:[R('Max mortgage ('+O.ltvL+' of value)',O.eqMax),R('New mortgage',$(+v('rNew'))),R('Pays off current mortgage',$(+v('rBal'))),...(+S.rDebts?[R('Pays off other debts',$(+S.rDebts))]:[]),...(S.rRoll?[R('Penalty added to mortgage',O.pen)]:[]),R('Cash out',O.eqCash),R('New monthly payment ('+pc(v('rRate'))+', '+v('rAmort')+' yrs)',O.eqPmt),R('Current payment plus debt payments',O.eqOld),R('Monthly change',O.eqChg)]}];
+    sp.notes=['The penalty is an estimate. Your current lender will confirm the exact amount.',gen]}
+  else if(t==='inc'){const qi=ratios(+v('reqLoan'),S.rate,S.amort);sp.title='Income Needed';
+    sp.hero=[['Gross yearly income needed',O.need,O.needM+' per month']];
+    sp.sections=[{h:'The mortgage',rows:[R('Mortgage amount',$(+v('reqLoan'))),R('Interest rate',rate),R('Amortization',am),R('Qualifying rate',O.qRate),R('Qualifying payment (monthly)',O.iqPmt)]},
+      {h:'Monthly costs counted',rows:[R('Property tax',$c(qi.tax)),R('Heat',$c(qi.heat)),R('Strata ('+SET.strataPct+'% counted)',$c(qi.str)),R('Other debt payments',$c(qi.debts)),...(qi.rent>0?[R('Rental income',$c(qi.rent))]:[])]},
+      {h:'Lender limits used',rows:[R('GDS: housing costs vs income',pc(qi.gl,1)),R('TDS: housing costs plus debts vs income',pc(qi.tl,1)),R('Limited by',qi.bind)]}];
+    sp.notes=['Lender rules can vary.',gen]}
+  else{sp.title='Mortgage Comparison';const f=k=>FREQ[v(k)].l;
+    sp.hero=[['Payment difference (B vs A)',O.dP,'Per payment'],['Interest difference over the term',O.dI,'B vs A']];
+    sp.sections=[{h:'Side by side',cols:['Mortgage A','Mortgage B'],rows:[['Mortgage',$(+v('cA_loan')),$(+v('cB_loan'))],['Rate',pc(v('cA_rate')),pc(v('cB_rate'))],['Amortization',v('cA_amort')+' yrs',v('cB_amort')+' yrs'],['Term',v('cA_term')+' yrs',v('cB_term')+' yrs'],['Frequency',f('cA_freq'),f('cB_freq')],['Payment',O.cAP,O.cBP],['Interest over term',O.cAI,O.cBI],['Principal paid over term',O.cAPr,O.cBPr],['Balance at end of term',O.cAB,O.cBB],['Total interest (full amortization)',O.cAT,O.cBT]]},
+      {h:'Difference (B vs A)',rows:[R('Payment',O.dP),R('Interest over term',O.dI),R('Principal paid over term',O.dPr),R('Balance at end of term',O.dB)]}]}
+  return sp}
+
+function renderPdf(sp){
+  const {jsPDF}=window.jspdf,d=new jsPDF({unit:'pt',format:'letter'});
+  const W=612,M=42,NAVY=[61,90,128],ORG=[242,140,40],INK=[30,30,30],GR=[105,105,105],LT=[244,244,240],LN=[222,222,216],BOT=700;
+  let y=0;
+  const head=()=>{d.setFillColor(...NAVY);d.rect(0,0,W,62,'F');d.setFillColor(...ORG);d.rect(0,62,W,3,'F');
+    d.setTextColor(255);d.setFont('helvetica','bold');d.setFontSize(19);d.text('Mack Mortgages',M,39);
+    d.setFont('helvetica','normal');d.setFontSize(12);d.text(sp.title,W-M,39,{align:'right'});y=90};
+  const foot=()=>{d.setDrawColor(...LN);d.line(M,722,W-M,722);d.setTextColor(...INK);d.setFont('helvetica','bold');d.setFontSize(9.5);
+    d.text('Mack Chaisson   |   778-874-2451   |   Mack.Chaisson@Cleartrust.ca   |   mackmortgages.ca',W/2,738,{align:'center'});
+    d.setFont('helvetica','normal');d.setTextColor(...GR);d.setFontSize(8);
+    d.text('Mackenzie Chaisson, Mortgage Broker   |   Dominion Lending Centres Clear Trust Mortgages',W/2,751,{align:'center'});
+    d.text('Page '+d.getNumberOfPages(),W-M,766,{align:'right'})};
+  const need=h=>{if(y+h>BOT){foot();d.addPage();head()}};
+  head();
+  const dt=new Date().toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'});
+  d.setFont('helvetica','normal');d.setFontSize(10.5);d.setTextColor(...GR);d.text((S.name?'Prepared for '+S.name+'      ':'')+dt,M,y);y+=18;
+  const hs=sp.hero,gap=12,hw=(W-2*M-gap*(hs.length-1))/hs.length;
+  hs.forEach((h,i)=>{const x=M+i*(hw+gap);d.setFillColor(...LT);d.roundedRect(x,y,hw,74,6,6,'F');d.setFillColor(...ORG);d.rect(x,y+10,3,54,'F');
+    d.setTextColor(...GR);d.setFontSize(9.5);d.text(d.splitTextToSize(h[0],hw-28)[0],x+16,y+20);
+    d.setTextColor(...NAVY);d.setFont('helvetica','bold');d.setFontSize(hs.length>1?20:26);d.text(h[1],x+16,y+48);
+    d.setFont('helvetica','normal');if(h[2]){d.setTextColor(...GR);d.setFontSize(9);d.text(d.splitTextToSize(h[2],hw-28)[0],x+16,y+64)}});
+  y+=96;
+  const hdr=t=>{need(48);d.setTextColor(...NAVY);d.setFont('helvetica','bold');d.setFontSize(12.5);d.text(t,M,y);d.setDrawColor(...ORG);d.setLineWidth(1.2);d.line(M,y+5,M+28,y+5);d.setLineWidth(0.5);y+=22};
+  for(const s of sp.sections){hdr(s.h);
+    if(s.text){d.setFont('helvetica','normal');d.setFontSize(10.5);d.setTextColor(...INK);const ln=d.splitTextToSize(s.text,W-2*M);need(ln.length*14);d.text(ln,M,y);y+=ln.length*14+12;continue}
+    if(s.cols){d.setFont('helvetica','bold');d.setFontSize(10);d.setTextColor(...GR);d.text(s.cols[0],W-M-150,y,{align:'right'});d.text(s.cols[1],W-M,y,{align:'right'});y+=16}
+    s.rows.forEach((r,i)=>{need(20);const last=i===s.rows.length-1;
+      d.setFont('helvetica','normal');d.setFontSize(10.5);d.setTextColor(...INK);d.text(d.splitTextToSize(r[0],s.cols?W-2*M-310:W-2*M-170)[0],M,y);
+      d.setFont('helvetica','bold');if(s.cols){d.text(r[1],W-M-150,y,{align:'right'});d.text(r[2],W-M,y,{align:'right'})}else d.text(r[1],W-M,y,{align:'right'});
+      if(!last){d.setDrawColor(...LN);d.line(M,y+6,W-M,y+6)}y+=20});
+    y+=12}
+  if(sp.table){const tb=sp.table,cx=[M,M+150,M+300,W-M];
+    const th=()=>{d.setFont('helvetica','bold');d.setFontSize(9.5);d.setTextColor(...GR);tb.head.forEach((h,i)=>d.text(h,i?cx[i]+(i<3?100:0):cx[0],y,i?{align:'right'}:{}));y+=6;d.setDrawColor(...NAVY);d.line(M,y,W-M,y);y+=13};
+    hdr(tb.h);th();
+    tb.rows.forEach((r,i)=>{if(y+15>BOT){foot();d.addPage();head();th()}
+      if(i%2===0){d.setFillColor(...LT);d.rect(M,y-10,W-2*M,15,'F')}
+      d.setFont('helvetica','normal');d.setFontSize(9.5);d.setTextColor(...INK);r.forEach((c,j)=>d.text(c,j?cx[j]+(j<3?100:0):cx[0]+4,y,j?{align:'right'}:{}));y+=15});
+    y+=14}
+  d.setFont('helvetica','normal');d.setFontSize(8.5);d.setTextColor(...GR);
+  for(const n of sp.notes){const ln=d.splitTextToSize(n,W-2*M);need(ln.length*11+4);d.text(ln,M,y);y+=ln.length*11+5}
+  foot();return d}
 
 build();renderItems();refresh();
 const flush=()=>LS.set('mmc.cur',S);window.addEventListener('pagehide',flush);document.addEventListener('visibilitychange',()=>{if(document.hidden)flush()});
