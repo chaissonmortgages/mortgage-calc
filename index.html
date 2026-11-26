@@ -11,35 +11,36 @@
 <style>
 :root{--bg:#0d1117;--card:#161b22;--card2:#1c2330;--bd:#2a3240;--tx:#e6edf3;--mu:#8b949e;--ac:#f28c28;--ac2:#4c8dff;--ok:#3fb950;--bad:#f85149;--warn:#d29922}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.35 system-ui,-apple-system,Roboto,sans-serif}
-header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--bd)}
-header .ttl{flex:1;min-width:0;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-header .ttl span{color:var(--ac);font-size:14px;margin-left:6px}
-button{font:inherit;color:var(--tx);background:var(--card2);border:1px solid var(--bd);border-radius:10px;padding:8px 12px}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.4 system-ui,-apple-system,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;background:var(--bg);border-bottom:1px solid var(--bd)}
+header .ttl{flex:1;min-width:0;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header .ttl span{color:var(--ac);font-size:15px;margin-left:6px}
+button{font:inherit;color:var(--tx);background:var(--card2);border:1px solid var(--bd);border-radius:12px;padding:10px 14px}
 button:active{filter:brightness(1.3)}
 button.pri{background:var(--ac);border-color:var(--ac);color:#111;font-weight:600}
-main{padding:10px 10px 90px}
+main{padding:12px 12px calc(100px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
 .tab{display:none}.tab.on{display:block}
 nav{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;overflow-x:auto;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1 0 auto;border:0;border-radius:0;background:none;color:var(--mu);padding:13px 7px;font-size:12.5px}
+nav button{flex:1 0 auto;border:0;border-radius:0;background:none;color:var(--mu);padding:16px 11px;font-size:15px}
 nav button.on{color:var(--ac);box-shadow:inset 0 3px 0 var(--ac)}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:10px}
-.hero{background:linear-gradient(160deg,#1d2a44,#161b22)}
-.big{font-size:32px;font-weight:700;letter-spacing:-.5px}
-.lbl{color:var(--mu);font-size:13px}
-.kv{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--bd)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px 16px;margin-bottom:12px}
+.hero,.hero2,#mini{background:linear-gradient(160deg,#1d2a44,#161b22)}
+.hero .hm{display:none}.hero .hx{margin-top:4px}
+.big{font-size:40px;line-height:1.1;font-weight:700;letter-spacing:-.5px}
+.lbl{color:var(--mu);font-size:15px}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
 .kv:last-child{border-bottom:0}
 .kv b{font-weight:600;text-align:right}
-h3{margin:2px 0 8px;font-size:14px;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.fld{padding:8px 0;border-bottom:1px solid var(--bd)}
+h3{margin:2px 0 8px;font-size:15px;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.fld{padding:10px 0 6px;border-bottom:1px solid var(--bd)}
 .fld:last-child{border-bottom:0}
 .frow{display:flex;align-items:center;gap:8px}
-.frow label{flex:1;min-width:0;color:var(--tx);font-size:14px}
-.inbox{display:flex;align-items:center;background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:0 8px;width:46%;max-width:170px}
+.frow label{flex:1;min-width:0;color:var(--tx);font-size:17px}
+.inbox{display:flex;align-items:center;background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:0 10px;width:50%;max-width:210px}
 .inbox:focus-within{border-color:var(--ac)}
-.inbox .pre,.inbox .unit{color:var(--mu);font-size:14px}
-input.num{flex:1;min-width:0;width:100%;background:none;border:0;color:var(--tx);font:inherit;font-size:16px;padding:8px 4px;text-align:right;outline:none}
-select{font:inherit;font-size:15px;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:8px;max-width:60%}
+.inbox .pre,.inbox .unit{color:var(--mu);font-size:17px}
+input.num{flex:1;min-width:0;width:100%;background:none;border:0;color:var(--tx);font:inherit;font-size:20px;font-weight:600;padding:10px 4px;text-align:right;outline:none}
+select{font:inherit;font-size:17px;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:8px;max-width:60%}
 .rng{position:relative;touch-action:pan-y;padding:2px 0}
 .rng input[type=range]{pointer-events:none;-webkit-appearance:none;appearance:none;background:transparent;width:100%;height:32px;margin:4px 0 0;display:block;--p:0%}
 .rng input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(to right,var(--ac) var(--p),var(--bd) var(--p))}
@@ -51,7 +52,41 @@ select{font:inherit;font-size:15px;color:var(--tx);background:var(--bg);border:1
 .seg{display:flex;border:1px solid var(--bd);border-radius:9px;overflow:hidden}
 .seg button{border:0;border-radius:0;padding:6px 14px;background:var(--bg);color:var(--mu)}
 .seg button.on{background:var(--ac);color:#111;font-weight:600}
-.hint{color:var(--mu);font-size:12px;margin-top:2px;text-align:right}
+.hint{color:var(--mu);font-size:14px;margin:-2px 0 6px;text-align:right}
+.dhint{font-size:20px;font-weight:700;color:var(--tx);text-align:right;margin:0 0 6px}
+.tog{font-size:17px}.note{font-size:13.5px!important}
+.badge{font-size:14px!important;padding:4px 12px!important}
+.ratio{display:flex;gap:8px;margin:10px 0 4px}.ratio span{flex:1;min-width:0;background:var(--bg);border-radius:12px;padding:8px 10px;font-size:13.5px;color:var(--mu)}
+.ratio b{display:block;font-size:20px;color:var(--tx);margin:2px 0}.ratio b.ok{color:var(--ok)}.ratio b.bad{color:var(--bad)}.ratio small{font-size:13px}
+.grp{background:var(--card);border:1px solid var(--bd);border-radius:18px;margin-bottom:12px;overflow:hidden}
+.grp>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:15px 16px;cursor:pointer}
+.grp>summary::-webkit-details-marker{display:none}
+.grp>summary b{font-size:16px;font-weight:600;white-space:nowrap}
+.grp>summary .gs{flex:1;min-width:0;text-align:right;color:var(--mu);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grp>summary::after{content:'';flex:none;width:8px;height:8px;border-right:2px solid var(--mu);border-bottom:2px solid var(--mu);transform:rotate(45deg);margin:-5px 2px 0}
+.grp[open]>summary::after{transform:rotate(225deg);margin-top:5px}
+.gin{padding:0 16px 8px;border-top:1px solid var(--bd)}
+.gin .frow label{font-size:15.5px}.gin input.num{font-size:18px}
+#mini{position:fixed;left:0;right:0;top:var(--hh,64px);z-index:4;display:flex;align-items:center;gap:12px;padding:8px 18px;border-bottom:1px solid var(--bd);box-shadow:0 8px 18px rgba(0,0,0,.5);transform:translateY(-130%);opacity:0;transition:transform .18s,opacity .18s;pointer-events:none}
+#mini.on{transform:none;opacity:1}
+#mini .ml{color:var(--mu);font-size:13.5px;line-height:1.2}#mini .mh{color:var(--mu);font-size:13px}
+#mini .mv{margin-left:auto;font-size:26px;font-weight:700;white-space:nowrap}
+.st4{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 2px}
+.st4 div{display:flex;align-items:baseline;gap:6px;background:var(--bg);border-radius:10px;padding:7px 10px;min-width:0}
+.st4 span{color:var(--mu);font-size:13.5px}.st4 b{font-size:17px;margin-left:auto;white-space:nowrap}.st4 small{color:var(--mu);font-size:12px;white-space:nowrap}
+.st4 b.ok{color:var(--ok)}.st4 b.bad{color:var(--bad)}
+.hname{font-size:24px;font-weight:700;margin:2px 0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--bd);min-height:112px}
+.tile b{font-size:16px}.tile .tv{font-size:22px;font-weight:700;color:var(--ac);margin-top:auto;padding-top:10px}.tile .tv.ok{color:var(--ok)}.tile .tv.bad{color:var(--bad)}.tile small{color:var(--mu);font-size:13px}
+.cg{display:grid;grid-template-columns:78px minmax(0,1fr) minmax(0,1fr);gap:6px 8px;align-items:center}
+.cg .ch{font-weight:700;text-align:center;color:var(--ac);font-size:18px}
+.cg .cl{font-size:14px;color:var(--mu);line-height:1.2}
+.cg .inbox{width:100%;max-width:none;padding:0 6px}.cg .inbox .pre,.cg .inbox .unit{font-size:14px}
+.cg input.num{font-size:16px;padding:9px 2px}
+.cg select{max-width:100%;width:100%;font-size:14px;padding:9px 4px}
+.cg .cv{text-align:right;font-weight:600;font-size:15.5px}
+.cg .sep{grid-column:1/-1;border-top:1px solid var(--bd);margin:6px 0}
 .tog{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd)}
 .tog input{width:22px;height:22px;accent-color:var(--ac)}
 .ok{color:var(--ok)}.bad{color:var(--bad)}
@@ -101,6 +136,7 @@ th{color:var(--mu);font-weight:600}
 </header>
 <main id="main"></main>
 <nav id="nav"></nav>
+<div id="mini"><div><div class="ml"></div><div class="mh"></div></div><div class="mv"></div></div>
 <div id="sheet" class="sheet hidden"><div class="panel" id="panel"></div></div>
 
 <script>
@@ -110,10 +146,12 @@ const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}
           set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 
 /* ---------- settings ---------- */
-const DEF_CLOSING=[['Legal / notary',1500],['Home inspection',500],['Appraisal',400],['Title insurance',250],['Tax / strata adjustments',0],['Moving',0]];
+const DEF_CLOSING=[['Legal / notary',1500],['Home inspection',400],['Appraisal',300],['Title insurance',300],['Tax / strata adjustments',0],['Moving',0]];
 const DEF_SET={buffer:2,floor:5.25,ovOn:false,ovRate:7.5,insGDS:39,insTDS:44,convGDS:44,convTDS:44,heat:100,strataPct:50,
   rentMethod:'add',rentAdd:80,rentOff:50,prem85:2.8,prem90:3.1,prem95:4.0,surcharge:0.2,compound:'semi',closing:DEF_CLOSING};
-let SET=Object.assign({},DEF_SET,LS.get('mmc.set',{}));
+const OLD_CL={'Home inspection':500,'Appraisal':400,'Title insurance':250},NEW_CL={'Home inspection':400,'Appraisal':300,'Title insurance':300};
+const _ss=LS.get('mmc.set',{});if(_ss.closing&&!_ss.clV){_ss.closing=_ss.closing.map(([n,a])=>[n,OLD_CL[n]===+a?NEW_CL[n]:a]);_ss.clV=2;LS.set('mmc.set',_ss)}
+let SET=Object.assign({},DEF_SET,_ss);
 
 /* ---------- scenario ---------- */
 const DEF_S=()=>({name:'',price:800000,downMode:'pct',downPct:20,downAmt:160000,rate:4.29,amort:25,term:5,freq:'monthly',
@@ -123,8 +161,9 @@ const DEF_S=()=>({name:'',price:800000,downMode:'pct',downPct:20,downAmt:160000,
   cA_loan:0,cA_rate:0,cA_amort:0,cA_term:0,cA_freq:'monthly',cB_loan:0,cB_rate:0,cB_amort:0,cB_term:0,cB_freq:'monthly',
   rValue:0,rBal:500000,rCurRate:5.29,rMonths:36,rRemAmort:20,rCurPmt:0,rPen:'greater',rComp:3.79,rPenMan:0,
   rRate:0,rAmort:0,rLTV:80,rNew:0,rDebts:0,rDebtPmt:0,rRoll:true,rFees:0,
-  own:{},sched:false,tab:'pay'});
-let S=Object.assign(DEF_S(),LS.get('mmc.cur',{}));
+  own:{},sched:false,tab:'home',clV:2});
+const _sc=LS.get('mmc.cur',{});if(_sc.closing&&!_sc.clV){_sc.closing.forEach(x=>{if(OLD_CL[x.n]===+x.a)x.a=NEW_CL[x.n]});_sc.clV=2}
+let S=Object.assign(DEF_S(),_sc);S.tab='home';
 if(!S.own)S.own={};
 
 /* linked fields: follow these until edited by hand */
@@ -140,18 +179,19 @@ const DEFS={
   rCurPmt:()=>pmt(v('rBal'),v('rCurRate'),v('rRemAmort'),12),
   gstAmt:()=>S.price*0.05
 };
-function v(k){return (DEFS[k]&&!S.own[k])?DEFS[k]():S[k]}
+function v(k){if(k==='loanAmt')return deal().base;return (DEFS[k]&&!S.own[k])?DEFS[k]():S[k]}
 
 /* ---------- field definitions ---------- */
 const FD={
   price:{l:'Purchase price',t:'$',min:100000,max:3000000,st:5000},
-  downPct:{l:'Down payment',t:'%',min:5,max:50,st:0.5},
-  downAmt:{l:'Down payment',t:'$',min:0,max:1000000,st:1000,mx:()=>S.price},
+  downPct:{l:'Down payment',t:'%',min:5,max:50,st:5},
+  loanAmt:{l:'Mortgage amount',t:'$',min:0,max:3000000,st:5000,mx:()=>S.price},
+  downAmt:{l:'Down payment',t:'$',min:0,max:1000000,st:5000,mx:()=>S.price},
   rate:{l:'Interest rate',t:'%',min:0.5,max:12,st:0.05},
   amort:{l:'Amortization',t:'yrs',min:5,max:35,st:1},
   term:{l:'Term',t:'yrs',min:1,max:10,st:1},
-  income:{l:'Gross annual income',t:'$',min:20000,max:600000,st:1000},
-  debts:{l:'Monthly debt payments',t:'$',min:0,max:5000,st:25},
+  income:{l:'Gross annual income',t:'$',min:20000,max:600000,st:5000},
+  debts:{l:'Monthly debts',t:'$',min:0,max:5000,st:25},
   ptax:{l:'Property tax (yearly)',t:'$',min:0,max:15000,st:100},
   heat:{l:'Heat / utilities (monthly)',t:'$',min:0,max:500,st:10},
   strata:{l:'Strata fee (monthly)',t:'$',min:0,max:1500,st:10},
@@ -241,7 +281,7 @@ function F(k,label){const f=FD[k];const unit=f.t==='$'?'':`<span class="unit">${
   ${f.ns?'':`<div class="rng"><input type="range" data-k="${k}" min="${f.min}" max="${f.max}" step="${f.st}" tabindex="-1"></div>`}</div>`}
 function DOWN(){return `<div class="fld" style="border-bottom:0;padding-bottom:0"><div class="frow"><label>Down payment as</label>
   <div class="seg"><button data-dm="pct">%</button><button data-dm="amt">$</button></div></div></div>
-  <div data-show="dmPct">${F('downPct')}</div><div data-show="dmAmt">${F('downAmt')}</div><div class="hint" data-o="downHint"></div>`}
+  <div data-show="dmPct">${F('downPct')}</div><div data-show="dmAmt">${F('downAmt')}</div><div class="dhint" data-o="downHint"></div>${F('loanAmt')}<div class="hint" data-show="insured" data-o="loanHint"></div>`}
 function SEL(k,label,opts){return `<div class="fld"><div class="frow"><label>${label}</label>${DEFS[k]?`<button class="relink" data-relink="${k}">&#8634;</button>`:''}
   <select data-k="${k}">${Object.entries(opts).map(([a,b])=>`<option value="${a}">${b}</option>`).join('')}</select></div></div>`}
 const FREQOPT=Object.fromEntries(Object.entries(FREQ).map(([a,b])=>[a,b.l]));
@@ -249,68 +289,70 @@ function TOG(k,label){return `<label class="tog"><span>${label}</span><input typ
 function KV(l,o,cls){return `<div class="kv"><span class="lbl">${l}</span><b data-o="${o}" ${cls?`data-c="${o}"`:''}></b></div>`}
 function card(title,body,cls){return `<div class="card ${cls||''}">${title?`<h3>${title}</h3>`:''}${body}</div>`}
 
-const TABS=[['pay','Payment'],['stress','Stress'],['buy','Purchase'],['close','Closing'],['refi','Refi'],['inc','Income'],['cmp','Compare']];
+const TABS=[['home','Home'],['pay','Payment'],['stress','Stress'],['buy','Purchase'],['close','Closing'],['refi','Refi'],['inc','Income'],['cmp','Compare']];
+function GRP(t,o,inner){return `<details class="grp"><summary><b>${t}</b><span class="gs" data-o="${o}"></span></summary><div class="gin">${inner}</div></details>`}
+function CIN(k){const f=FD[k];return `<div class="inbox">${f.t==='$'?'<span class="pre">$</span>':''}<input class="num" data-k="${k}" inputmode="decimal" autocomplete="off">${f.t==='$'?'':`<span class="unit">${f.t==='yrs'?'yr':'%'}</span>`}</div>
+  <div class="rng"><input type="range" data-k="${k}" min="${f.min}" max="${f.max}" step="${f.st}" tabindex="-1"></div>`}
+function HERO(lbl,big,mini,extra,cls){return `<div class="card hero ${cls||''}"><div class="hl lbl" ${lbl.o?`data-o="${lbl.o}"`:''}>${lbl.t||''}</div><div class="big" data-o="${big}" data-c="${big}"></div><div class="hm" data-o="${mini}"></div><div class="hx">${extra}</div></div>`}
 function build(){
   const T={};
-  T.pay=card('',`<div class="lbl" data-o="freqLbl"></div><div class="big" data-o="pay"></div>
-     <div class="lbl">Mortgage <b data-o="loan"></b><span data-show="insured"> incl. <b data-o="prem"></b> premium (<span data-o="premRate"></span>)</span></div>`,'hero')
+  const tiles=[['pay','Mortgage payment','pay','tPay'],['stress','Stress test','maxLoan','tStress'],['buy','Purchase','allIn','tBuy'],['close','Closing costs','clTot','tClose'],['refi','Refinance','eqCash','tRefi'],['inc','Income needed','need','tInc'],['cmp','Compare','dP','tCmp']];
+  T.home=`<div class="card"><div class="lbl">Scenario</div><div class="hname" data-o="hName"></div><div class="lbl" data-o="hSub"></div>
+      <div class="row"><button data-act="saves" style="flex:1">Saves</button><button data-act="new" style="flex:1">New</button><button data-act="set" style="flex:1">Settings</button></div></div>
+    <div class="tiles">${tiles.map(([t,l,o,s])=>`<button class="tile" data-go="${t}"><b>${l}</b><span class="tv" data-o="${o}"></span><small data-o="${s}"></small></button>`).join('')}</div>`;
+  T.pay=HERO({o:'freqLbl'},'pay','payMini',`<span class="lbl">Mortgage <b data-o="loan"></b><span data-show="insured"> incl. <b data-o="prem"></b> premium (<span data-o="premRate"></span>)</span></span>`)
     +`<div class="warn" data-show="warn" data-o="warn"></div>`
-    +card('',F('price')+DOWN()+F('rate')+F('amort')+F('term')+SEL('freq','Payment frequency',FREQOPT))
+    +card('',F('price')+DOWN()+F('rate'))
+    +GRP('Amortization & term','sAmort',F('amort')+F('term')+SEL('freq','Payment frequency',FREQOPT))
     +card('This term (<span data-o="termY"></span>)',KV('Interest paid','tInt')+KV('Principal paid','tPrin')+KV('Balance at renewal','tBal'))
     +card('Full amortization',KV('Total interest','aInt')+KV('Paid off in','aYrs')+KV('Monthly equivalent','mEq'))
     +card('',`<button id="schedBtn" style="width:100%"></button><div id="sched"></div>`);
-  T.stress=card('',`<div class="frow"><div class="lbl" style="flex:1">Qualifies at <b data-o="qRate"></b></div><span class="badge" data-o="qPass" data-c="qPass"></span></div>
-     <div class="big" data-o="qPmt"></div><div class="lbl">Qualifying monthly payment (contract: <span data-o="cPmt"></span>)</div>
-     <div class="diff" style="margin-top:10px"><div><span class="lbl">GDS</span><b data-o="gds" data-c="gds"></b><span class="lbl">limit <span data-o="gl"></span></span></div>
-     <div><span class="lbl">TDS</span><b data-o="tds" data-c="tds"></b><span class="lbl">limit <span data-o="tl"></span></span></div></div>
-     <div class="note" data-o="qRule"></div>`,'hero')
-    +card('Max mortgage',KV('At qualifying rate','maxLoan')+KV('This deal','loan2')+KV('Room / short','room','c'))
-    +card('Borrower',F('income')+F('debts')+F('rent')+`<div class="note" data-show="rentOn" data-o="rentNote"></div>`)
-    +card('Property',F('ptax')+F('heat')+F('strata')+`<div class="note">Strata counted at ${'<span data-o="strataPct"></span>'} for ratios.</div>`)
-    +card('Mortgage',F('price')+DOWN()+F('rate')+F('amort'))
-    +card('Limits',F('gdsLim')+F('tdsLim')+`<div class="note" data-o="limNote"></div>`);
-  T.buy=card('',`<div class="lbl">All-in monthly</div><div class="big" data-o="allIn"></div>
-     <div class="kv"><span class="lbl">Mortgage (monthly)</span><b data-o="bPI"></b></div>
-     <div class="kv"><span class="lbl">Property tax</span><b data-o="bTax"></b></div>
-     <div class="kv"><span class="lbl">Strata</span><b data-o="bStr"></b></div>
-     <div class="kv"><span class="lbl">Heat / utilities</span><b data-o="bHeat"></b></div>
-     <div class="kv" data-show="rentOn"><span class="lbl">After rental income</span><b data-o="bNet"></b></div>`,'hero')
+  T.stress=HERO({t:'Qualifies for up to'},'maxLoan','qMini',`<div class="frow" style="margin-top:6px"><span class="lbl" style="flex:1">At <b data-o="qRate"></b>: <b data-o="qPmt"></b>/mo</span><span class="badge" data-o="qPass" data-c="qPass"></span></div>
+      <div class="st4"><div><span>GDS</span><b data-o="gds" data-c="gds"></b><small>/ <span data-o="gl"></span></small></div><div><span>TDS</span><b data-o="tds" data-c="tds"></b><small>/ <span data-o="tl"></span></small></div>
+      <div><span>This deal</span><b data-o="loan2"></b></div><div><span>Room</span><b data-o="room" data-c="room"></b></div></div>
+      <div class="note" data-o="qRule"></div>`)
+    +card('',F('income')+F('debts'))
+    +GRP('Mortgage','sMort',F('price')+DOWN()+F('rate')+F('amort'))
+    +GRP('Property costs','sProp',F('ptax')+F('heat')+F('strata')+F('rent')+`<div class="note" data-show="rentOn" data-o="rentNote"></div><div class="note">Strata counted at <span data-o="strataPct"></span> for ratios.</div>`)
+    +GRP('GDS / TDS limits','sLim',F('gdsLim')+F('tdsLim')+`<div class="note" data-o="limNote"></div>`);
+  T.buy=HERO({t:'All-in monthly'},'allIn','buyMini',KV('Mortgage (monthly)','bPI')+KV('Property tax','bTax')+KV('Strata','bStr')+KV('Heat / utilities','bHeat')+`<div data-show="rentOn">${KV('After rental income','bNet')}</div>`)
     +`<div class="warn" data-show="warn" data-o="warn"></div>`
-    +card('Purchase',F('price')+DOWN()+F('rate')+F('amort'))
-    +card('Costs',F('ptax')+F('strata')+F('heat'))
-    +card('Borrower',F('income')+F('debts')+F('rent')+`<div class="note" data-show="rentOn" data-o="rentNote"></div>`)
+    +card('',F('price')+DOWN()+F('rate'))
+    +card('',F('income')+F('debts')+F('rent')+`<div class="note" data-show="rentOn" data-o="rentNote"></div>`)
+    +GRP('Property costs','sPropB',F('ptax')+F('strata')+F('heat'))
+    +GRP('Amortization','sAm',F('amort'))
     +card('Summary',KV('Down payment','bDown')+`<div data-show="insured">${KV('Insurance premium','prem')}</div>`+KV('Total mortgage','loan')
        +KV('GDS (qualifying)','gdsL','c')+KV('TDS (qualifying)','tdsL','c')+KV('Max mortgage','maxLoan')+KV('Closing costs (est.)','clTot')+KV('Cash to close','cash'));
-  T.close=card('',`<div class="lbl">Closing costs</div><div class="big" data-o="clTot"></div><div class="lbl">Cash to close incl. down payment: <b data-o="cash"></b></div>`,'hero')
+  T.close=HERO({t:'Closing costs'},'clTot','closeMini',`<span class="lbl">Cash to close incl. down payment: <b data-o="cash"></b></span>`)
     +card('',F('price')+TOG('fthb','First-time home buyer')+TOG('newBuild','Newly built home'))
     +card('Property transfer tax',KV('PTT','ptt')+`<div data-show="exOn">${KV('<span data-o="exLbl"></span>','ex')}</div>`+KV('PTT payable','pttNet')+`<div class="note" data-o="exNote"></div>`)
     +`<div data-show="nb">`+card('GST (new build)',TOG('gstOn','GST payable on top of price')+`<div data-show="gstOn">${F('gstAmt')+F('gstRebate')}</div>`)+`</div>`
     +card('Other costs',`<div id="items"></div><div class="row"><button id="addItem">+ Add item</button><button id="saveDefs">Save as my defaults</button></div>`)
     +`<div class="note">Estimates only. Check PTT and GST with the lawyer or notary.</div>`;
-  T.refi=card('Break and save',`<div class="frow"><div style="flex:1"><div class="lbl">Net savings this term</div><div class="big" data-o="bsNet" data-c="bsNet"></div></div></div>`
-       +KV('Penalty','pen')+KV('Interest saved (rest of term)','bsSave')+KV('Payment change','bsPmt','c')+KV('Break-even','bsBE'),'hero')
-    +card('Equity takeout',`<div class="lbl">Cash out</div><div class="big" data-o="eqCash" data-c="eqCash"></div>`
-       +KV('Max mortgage (<span data-o="ltvL"></span>)','eqMax')+KV('Available equity','eqAvail')+KV('New payment','eqPmt')+KV('Old payment + debts','eqOld')+KV('Monthly change','eqChg','c'),'hero')
+  T.refi=HERO({t:'Break and save: net this term'},'bsNet','refiMini',KV('Penalty','pen')+KV('Interest saved (rest of term)','bsSave')+KV('Payment change','bsPmt','c')+KV('Break-even','bsBE'))
+    +`<div class="card hero2"><div class="lbl">Equity takeout: cash out</div><div class="big" data-o="eqCash" data-c="eqCash"></div>`
+       +KV('Max mortgage (<span data-o="ltvL"></span>)','eqMax')+KV('Available equity','eqAvail')+KV('New payment','eqPmt')+KV('Old payment + debts','eqOld')+KV('Monthly change','eqChg','c')+`</div>`
     +`<div class="warn" data-show="rWarn" data-o="rWarn"></div>`
     +card('Current mortgage',F('rValue')+F('rBal')+F('rCurRate')+F('rMonths')+F('rRemAmort')+F('rCurPmt'))
-    +card('Penalty',SEL('rPen','Type',{greater:'Fixed: greater of 3 mo / IRD','3mo':'Variable: 3 months interest',manual:'Manual'})
+    +GRP('Penalty','sPen',SEL('rPen','Type',{greater:'Fixed: greater of 3 mo / IRD','3mo':'Variable: 3 months interest',manual:'Manual'})
        +`<div data-show="penIRD">${F('rComp')}</div><div data-show="penMan">${F('rPenMan')}</div>`+KV('3 months interest','pen3')+`<div data-show="penIRD">${KV('IRD','penI')}</div>`)
-    +card('New mortgage',F('rRate')+F('rAmort')+F('rLTV')+F('rNew')+F('rDebts')+F('rDebtPmt')+TOG('rRoll','Add penalty to new mortgage')+F('rFees'));
-  T.inc=card('',`<div class="lbl">Required income (yearly)</div><div class="big" data-o="need"></div>
-     <div class="lbl"><span data-o="needM"></span>/mo. Limited by <b data-o="bind"></b> at <b data-o="qRate"></b></div>
-     <div class="diff" style="margin-top:10px"><div><span class="lbl">Qualifying payment</span><b data-o="iqPmt"></b></div><div><span class="lbl">Housing costs</span><b data-o="iHouse"></b></div></div>
-     <div class="note" data-show="rentOn" data-o="rentNoteI"></div>`,'hero')
-    +card('',F('reqLoan')+F('rate')+F('amort'))
-    +card('Costs',F('ptax')+F('heat')+F('strata')+F('debts')+F('rent'))
-    +card('Limits',F('gdsLim')+F('tdsLim'));
-  const col=x=>card('Mortgage '+x,F('c'+x+'_loan')+F('c'+x+'_rate')+F('c'+x+'_amort')+F('c'+x+'_term')+SEL('c'+x+'_freq','Frequency',FREQOPT)
-      +`<div class="kv"><span class="lbl">Payment</span><b data-o="c${x}P"></b></div><div class="kv"><span class="lbl">Interest (term)</span><b data-o="c${x}I"></b></div>
-      <div class="kv"><span class="lbl">Principal (term)</span><b data-o="c${x}Pr"></b></div><div class="kv"><span class="lbl">Balance end</span><b data-o="c${x}B"></b></div>
-      <div class="kv"><span class="lbl">Total interest</span><b data-o="c${x}T"></b></div>`);
-  T.cmp=card('B vs A',`<div class="diff"><div><span class="lbl">Payment</span><b data-o="dP" data-c="dP"></b></div><div><span class="lbl">Interest (term)</span><b data-o="dI" data-c="dI"></b></div>
-     <div><span class="lbl">Principal (term)</span><b data-o="dPr" data-c="dPrG"></b></div><div><span class="lbl">Balance end of term</span><b data-o="dB" data-c="dB"></b></div></div>
-     <div class="note" data-o="cmpNote"></div>`,'hero')
-    +`<div class="grid2">${col('A')}${col('B')}</div>`;
+    +card('New mortgage',F('rRate')+F('rNew')+F('rDebts')+F('rDebtPmt')+TOG('rRoll','Add penalty to new mortgage'))
+    +GRP('Amortization, LTV & fees','sRefi',F('rAmort')+F('rLTV')+F('rFees'));
+  T.inc=HERO({t:'Required income (yearly)'},'need','incMini',`<span class="lbl"><span data-o="needM"></span>/mo. Limited by <b data-o="bind"></b> at <b data-o="qRate"></b></span>
+     <div class="ratio"><span>Qualifying pmt<b data-o="iqPmt"></b></span><span>Housing costs<b data-o="iHouse"></b></span></div>
+     <div class="note" data-show="rentOn" data-o="rentNoteI"></div>`)
+    +card('',F('reqLoan')+F('rate'))
+    +GRP('Amortization','sAm',F('amort'))
+    +GRP('Costs & debts','sCosts',F('ptax')+F('heat')+F('strata')+F('debts')+F('rent'))
+    +GRP('GDS / TDS limits','sLim',F('gdsLim')+F('tdsLim'));
+  const fsel=k=>`<select data-k="${k}">${Object.entries(FREQOPT).map(([a,b])=>`<option value="${a}">${b}</option>`).join('')}</select>`;
+  T.cmp=HERO({t:'Payment difference (B vs A)'},'dP','cmpMini',`<div class="ratio"><span>Interest (term)<b data-o="dI" data-c="dI"></b></span><span>Principal (term)<b data-o="dPr" data-c="dPrG"></b></span><span>Balance end<b data-o="dB" data-c="dB"></b></span></div><div class="note" data-o="cmpNote"></div>`)
+    +card('',`<div class="cg"><div></div><div class="ch">A</div><div class="ch">B</div>
+      ${[['Mortgage','loan'],['Rate','rate'],['Amort.','amort'],['Term','term']].map(([l,s])=>`<div class="cl">${l}</div><div>${CIN('cA_'+s)}</div><div>${CIN('cB_'+s)}</div>`).join('')}
+      <div class="cl">Frequency</div><div>${fsel('cA_freq')}</div><div>${fsel('cB_freq')}</div>
+      <div class="sep"></div>
+      ${[['Payment','P'],['Interest (term)','I'],['Principal (term)','Pr'],['Balance end of term','B'],['Total interest','T']].map(([l,s])=>`<div class="cl">${l}</div><div class="cv" data-o="cA${s}"></div><div class="cv" data-o="cB${s}"></div>`).join('')}
+      </div><div class="row"><button data-act="resetA" style="flex:1">A = this deal</button><button data-act="resetB" style="flex:1">B = copy of A</button></div>`);
   $main.innerHTML=TABS.map(([id])=>`<section class="tab" id="t-${id}">${T[id]}</section>`).join('');
   $nav.innerHTML=TABS.map(([id,l])=>`<button data-tab="${id}">${l}</button>`).join('');
 }
@@ -324,6 +366,13 @@ function compute(){
   O.warn=d.warn;O.dmPct=S.downMode==='pct';O.dmAmt=!O.dmPct;O.downHint=O.dmPct?'= '+$(d.down):'= '+pc(d.pct);
   O.termY=S.term+' yrs';O.tInt=$(R.ti);O.tPrin=$(R.tp);O.tBal=$(R.termBal);O.aInt=$(R.ai);O.aYrs=yrs(R.payoff);O.mEq=$c(R.P*FREQ[S.freq].n/12);
   O._years=R.years;
+  O.payMini='Mortgage '+O.loan;O.loanHint='+ '+O.prem+' premium = '+O.loan+' total mortgage';
+  O.sAmort=S.amort+' yrs · '+S.term+' yr term · '+FREQ[S.freq].l;O.sAm=S.amort+' years';O.sMort=O.loan+' · '+pc(S.rate)+' · '+S.amort+' yrs';
+  const _h=+v('heat')||0;O.sProp='Tax '+$(+S.ptax)+'/yr · Heat '+$(_h)+(+S.strata?' · Strata '+$(+S.strata):'')+(+S.rent?' · Rent '+$(+S.rent):'');
+  O.sPropB='Tax '+$(+S.ptax)+'/yr · Strata '+$(+S.strata)+' · Heat '+$(_h);O.sCosts='Tax '+$(+S.ptax)+'/yr · Debts '+$(+S.debts)+'/mo';
+  O.sLim='GDS '+pc(v('gdsLim'),1)+' · TDS '+pc(v('tdsLim'),1);
+  O.hName=S.name||'Unsaved scenario';O.hSub=$(+S.price)+' price · '+O.loan+' mortgage · '+pc(S.rate);
+  O.tPay=FREQ[S.freq].l.toLowerCase();O.tStress='qualifies for';O.tBuy='all-in per month';O.tClose='plus down payment';O.tRefi='equity cash out';O.tInc='income needed per year';O.tCmp='B vs A payment';
   // stress
   const q=ratios(d.loan,S.rate,S.amort);
   O.qRate=pc(q.q);O.qPmt=$c(q.qp);O.cPmt=$c(pmt(d.loan,S.rate,S.amort,12));O.gds=pc(q.gds);O.tds=pc(q.tds);O.gl=pc(q.gl,1);O.tl=pc(q.tl,1);
@@ -331,12 +380,12 @@ function compute(){
   O.qRule=SET.ovOn?'Manual stress rate from settings: '+pc(SET.ovRate)+'.':'Higher of contract + '+SET.buffer+'% or '+pc(SET.floor)+'. Change in settings (HELOC etc).';
   O.maxLoan=$(q.maxLoan);O.loan2=$(d.loan);O.room=sgn(q.maxLoan-d.loan);C.room=q.maxLoan>=d.loan;
   O.strataPct=SET.strataPct+'%';O.limNote=(d.insured?'Insured':'Conventional')+' default: '+(d.insured?SET.insGDS+'/'+SET.insTDS:SET.convGDS+'/'+SET.convTDS)+'. Tap the arrow to reset.';
-  O.rentOn=q.rent>0;
+  O.rentOn=q.rent>0;O.qMini='At '+O.qRate+' · '+O.qPass+' · GDS '+O.gds+' TDS '+O.tds;C.maxLoan=C.room;
   O.rentNote=SET.rentMethod==='add'?SET.rentAdd+'% of rent ('+$(q.add)+'/mo) added to income. Change method in settings.':SET.rentOff+'% of rent ('+$(q.off)+'/mo) offsets housing costs. Change method in settings.';
   O.rentNoteI=O.rentNote+(SET.rentMethod==='add'?' Required income shown is before rent.':'');
   // purchase
   const pi=pmt(d.loan,S.rate,S.amort,12),tax=(+S.ptax||0)/12,str=+S.strata||0,heat=+v('heat')||0,all=pi+tax+str+heat;
-  O.allIn=$c(all);O.bPI=$c(pi);O.bTax=$c(tax);O.bStr=$c(str);O.bHeat=$c(heat);O.bNet=$c(all-(+S.rent||0));
+  O.allIn=$c(all);O.bPI=$c(pi);O.bTax=$c(tax);O.bStr=$c(str);O.bHeat=$c(heat);O.bNet=$c(all-(+S.rent||0));O.buyMini='Mortgage payment '+O.bPI;
   O.bDown=$(d.down)+' ('+pc(d.pct,1)+')';O.gdsL=pc(q.gds)+' / '+pc(q.gl,1);O.tdsL=pc(q.tds)+' / '+pc(q.tl,1);C.gdsL=q.gOk;C.tdsL=q.tOk;
   // closing
   const p=+S.price||0,ptt=pttCalc(p);let f=0,nb=0;
@@ -345,11 +394,11 @@ function compute(){
   const ex=Math.max(f,nb);O.ptt=$(ptt);O.exOn=ex>0;O.ex='-'+$(ex);O.exLbl=nb>=f?'Newly built exemption':'First-time buyer exemption';O.pttNet=$(ptt-ex);
   O.exNote=(S.fthb&&p>=860000?'Over $860K: no first-time buyer exemption. ':'')+(S.newBuild&&p>=1.15e6?'Over $1.15M: no newly built exemption. ':'')+(S.fthb&&S.newBuild?'Can\'t combine both; using the bigger one.':'');
   O.nb=S.newBuild;O.gstOn=S.gstOn;const gst=S.newBuild&&S.gstOn?(+v('gstAmt')||0)-(+S.gstRebate||0):0;
-  const items=S.closing.reduce((a,x)=>a+(+x.a||0),0),clTot=ptt-ex+gst+items;O.clTot=$(clTot);O.cash=$(clTot+d.down);
+  const items=S.closing.reduce((a,x)=>a+(+x.a||0),0),clTot=ptt-ex+gst+items;O.clTot=$(clTot);O.cash=$(clTot+d.down);O.closeMini='Cash to close '+O.cash;
   // refi
   const val=+v('rValue'),bal=+v('rBal'),cr=+v('rCurRate'),mo=+v('rMonths'),rem=+v('rRemAmort'),nr=+v('rRate');
   const p3=bal*cr/100/4,ird=bal*Math.max(0,cr-(+S.rComp))/100*mo/12,pen=S.rPen==='manual'?+S.rPenMan:S.rPen==='3mo'?p3:Math.max(p3,ird);
-  O.pen3=$(p3);O.penI=$(ird);O.pen=$(pen);O.penIRD=S.rPen==='greater';O.penMan=S.rPen==='manual';
+  O.sPen=({greater:'Fixed',['3mo']:'Variable',manual:'Manual'})[S.rPen]+' · '+$(pen);O.refiMini='Penalty '+$(pen);O.sRefi=v('rAmort')+' yrs · '+pc(v('rLTV'),0)+' LTV · fees '+$(+S.rFees||0);O.pen3=$(p3);O.penI=$(ird);O.pen=$(pen);O.penIRD=S.rPen==='greater';O.penMan=S.rPen==='manual';
   const oR=run(bal,cr,rem,mo/12,'monthly'),nR=run(bal,nr,rem,mo/12,'monthly'),saved=oR.ti-nR.ti,net=saved-pen-(+S.rFees||0);
   O.bsSave=$(saved);O.bsNet=sgn(net);C.bsNet=net>=0;const pchg=pmt(bal,nr,rem,12)-(+v('rCurPmt'));O.bsPmt=sgn(pchg,$c)+'/mo';C.bsPmt=pchg<=0;
   const perMo=mo>0?saved/mo:0;O.bsBE=perMo>0?Math.ceil((pen+(+S.rFees||0))/perMo)+' months'+(((pen+(+S.rFees||0))/perMo)>mo?' (past term end)':''):'Never';
@@ -358,11 +407,12 @@ function compute(){
   const np=pmt(nw,nr,+v('rAmort'),12),op=(+v('rCurPmt'))+(+S.rDebtPmt||0);O.eqPmt=$c(np);O.eqOld=$c(op);O.eqChg=sgn(np-op,$c)+'/mo';C.eqChg=np<=op;
   const rw=[];if(nw>max+1)rw.push('New mortgage is over '+pc(v('rLTV'),0)+' of value.');if(eqCash<0)rw.push('New mortgage doesn\'t cover balance, debts and penalty.');O.rWarn=rw.join('\n');
   // required income
-  const qi=ratios(+v('reqLoan'),S.rate,S.amort);O.need=$(qi.needAnnual);O.needM=$(qi.needAnnual/12);O.bind=qi.bind;O.iqPmt=$c(qi.qp);O.iHouse=$c(qi.housing);
+  const qi=ratios(+v('reqLoan'),S.rate,S.amort);O.need=$(qi.needAnnual);O.needM=$(qi.needAnnual/12);O.bind=qi.bind;O.incMini=O.needM+'/mo';O.iqPmt=$c(qi.qp);O.iHouse=$c(qi.housing);
   // compare
   const A=run(+v('cA_loan'),+v('cA_rate'),+v('cA_amort'),+v('cA_term'),v('cA_freq')),B=run(+v('cB_loan'),+v('cB_rate'),+v('cB_amort'),+v('cB_term'),v('cB_freq'));
   for(const [x,r] of [['A',A],['B',B]]){O['c'+x+'P']=$c(r.P);O['c'+x+'I']=$(r.ti);O['c'+x+'Pr']=$(r.tp);O['c'+x+'B']=$(r.termBal);O['c'+x+'T']=$(r.ai)}
   const nz=(x,t,good)=>Math.abs(x)<t?undefined:good;O.dP=sgn(B.P-A.P,$c);C.dP=nz(B.P-A.P,.005,B.P<A.P);O.dI=sgn(B.ti-A.ti);C.dI=nz(B.ti-A.ti,.5,B.ti<A.ti);O.dPr=sgn(B.tp-A.tp);C.dPrG=nz(B.tp-A.tp,.5,B.tp>A.tp);O.dB=sgn(B.termBal-A.termBal);C.dB=nz(B.termBal-A.termBal,.5,B.termBal<A.termBal);
+  O.cmpMini='Interest (term) '+O.dI;
   O.cmpNote=(v('cA_freq')!==v('cB_freq')?'Different frequencies: payment difference is per payment. ':'')+(+v('cA_term')!==+v('cB_term')?'Different terms: term totals cover different periods.':'');
   return {O,C}}
 
@@ -385,7 +435,7 @@ function refresh(){
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id==='t-'+S.tab));
   document.getElementById('schedBtn').textContent=S.sched?'Hide yearly schedule':'Show yearly schedule';
   document.getElementById('sched').innerHTML=S.sched?`<table><tr><th>Yr</th><th>Interest</th><th>Principal</th><th>Balance</th></tr>${O._years.map(y=>`<tr><td>${y.y}</td><td>${$(y.i)}</td><td>${$(y.p)}</td><td>${$(y.b)}</td></tr>`).join('')}</table>`:'';
-  document.getElementById('scnName').textContent=S.name||'';
+  document.getElementById('scnName').textContent=S.name||'';updMini();
   clearTimeout(saveT);saveT=setTimeout(()=>LS.set('mmc.cur',S),250);
 }
 function renderItems(){document.getElementById('items').innerHTML=S.closing.map((x,i)=>`<div class="item"><input class="nm" data-in="${i}" value="${esc(x.n)}">
@@ -395,6 +445,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 function setVal(k,x){
   if(k==='downPct'){S.downPct=x;S.downAmt=S.price*x/100}
   else if(k==='downAmt'){S.downAmt=x;S.downPct=S.price?x/S.price*100:0}
+  else if(k==='loanAmt'){const L=Math.min(Math.max(x,0),S.price);S.downAmt=S.price-L;S.downPct=S.price?S.downAmt/S.price*100:0}
   else if(k==='price'){S.price=x;if(S.downMode==='pct')S.downAmt=x*S.downPct/100;else S.downPct=x?S.downAmt/x*100:0}
   else S[k]=x;
   if(DEFS[k])S.own[k]=true;
@@ -414,7 +465,12 @@ document.addEventListener('change',e=>{const el=e.target;
 document.addEventListener('focusout',e=>{if(e.target.classList&&e.target.classList.contains('num'))setTimeout(refresh,0)});
 document.addEventListener('focusin',e=>{const el=e.target;if(el.classList&&el.classList.contains('num'))setTimeout(()=>{try{el.select()}catch(_){}},0)});
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.tab){S.tab=b.dataset.tab;refresh();window.scrollTo(0,0);return}
+  if(b.dataset.tab||b.dataset.go){S.tab=b.dataset.tab||b.dataset.go;window.scrollTo(0,0);refresh();const nb=$nav.querySelector('[data-tab="'+S.tab+'"]');if(nb)nb.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});return}
+  if(b.dataset.act){const a=b.dataset.act;
+    if(a==='saves')openSaves();else if(a==='set')openSettings();
+    else if(a==='new'){if(confirm('Start a new blank scenario? Unsaved changes are lost.')){S=DEF_S();renderItems();refresh()}}
+    else if(a==='resetA'||a==='resetB'){const p=a==='resetA'?'cA_':'cB_';Object.keys(S.own).forEach(k=>{if(k.startsWith(p))delete S.own[k]});refresh()}
+    return}
   if(b.dataset.relink){delete S.own[b.dataset.relink];refresh();return}
   if(b.dataset.dm){if(S.downMode!==b.dataset.dm){S.downMode=b.dataset.dm}refresh();return}
   if(b.dataset.ix!=null){S.closing.splice(+b.dataset.ix,1);renderItems();refresh();return}
@@ -494,7 +550,7 @@ function sharePdf(){if(!lastPdf)return;navigator.share({files:[lastPdf],title:la
 function savePdf(){if(!lastPdf)return;const u=URL.createObjectURL(lastPdf),a=document.createElement('a');a.href=u;a.download=lastPdf.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
 
 function pdfSpec(){
-  const {O}=compute(),d=deal(),t=S.tab,R=(l,x)=>[l,x],rate=pc(S.rate),am=S.amort+' years',fq=FREQ[S.freq].l;
+  const {O}=compute(),d=deal(),t=S.tab==='home'?'pay':S.tab,R=(l,x)=>[l,x],rate=pc(S.rate),am=S.amort+' years',fq=FREQ[S.freq].l;
   const gen='These numbers are estimates to help you plan. They are not a mortgage approval, and rates are not guaranteed. Final numbers depend on the lender and your full application.';
   const prem=d.insured?[R('Mortgage insurance premium (added to the mortgage)',O.prem)]:[];
   const sp={title:'',hero:[],sections:[],table:null,notes:[gen]};
@@ -506,7 +562,7 @@ function pdfSpec(){
     sp.table={h:'Year by year',head:['Year','Interest','Principal','Balance'],rows:O._years.map(y=>[String(y.y),$(y.i),$(y.p),$(y.b)])};
     sp.notes=['Assumes the same rate for the full amortization. Your rate is reset at each renewal.',gen]}
   else if(t==='stress'){const q=ratios(d.loan,S.rate,S.amort),pass=q.gOk&&q.tOk;sp.title='Stress Test';
-    sp.hero=[['Qualifying payment (monthly)',O.qPmt,'Tested at '+O.qRate],['Result',pass?'Meets limits':'Over limits','GDS '+O.gds+'   TDS '+O.tds]];
+    sp.hero=[['Qualifies for a mortgage up to',O.maxLoan,'Tested at '+O.qRate],['This mortgage: '+O.loan,pass?'Meets limits':'Over limits','GDS '+O.gds+'   TDS '+O.tds]];
     sp.sections=[{h:'How the stress test works',text:SET.ovOn?'Lenders check that you can afford the payment at a qualifying rate of '+pc(SET.ovRate)+'.':'Lenders check that you can afford the payment at the higher of your rate plus '+SET.buffer+'% or '+pc(SET.floor)+'. Your rate is '+rate+', so you are tested at '+O.qRate+'.'},
       {h:'Your numbers',rows:[R('Gross yearly income',$(+S.income)),R('Monthly debt payments',$(q.debts)),...(q.rent>0?[R('Rental income (monthly)',$(q.rent))]:[]),R('Property tax (yearly)',$(+S.ptax)),R('Heat (monthly)',$(q.heat)),R('Strata fee (monthly)',$(+S.strata)),R('Mortgage',O.loan),R('Amortization',am)]},
       {h:'Results',rows:[R('Your payment at '+rate+' (monthly)',O.cPmt),R('Qualifying payment at '+O.qRate,O.qPmt),R('GDS: housing costs vs income',O.gds+' of '+O.gl+' max'),R('TDS: housing costs plus debts vs income',O.tds+' of '+O.tl+' max'),R('Max mortgage with these numbers',O.maxLoan)]}];
@@ -586,7 +642,14 @@ function renderPdf(sp){
   for(const n of sp.notes){const ln=d.splitTextToSize(n,W-2*M);need(ln.length*11+4);d.text(ln,M,y);y+=ln.length*11+5}
   foot();return d}
 
-build();renderItems();refresh();
+const $mini=document.getElementById('mini');let HH=64;
+function setHH(){HH=document.querySelector('header').offsetHeight;document.documentElement.style.setProperty('--hh',HH+'px')}
+function updMini(){const h=document.querySelector('.tab.on .hero');if(!h){$mini.classList.remove('on');return}
+  const show=h.getBoundingClientRect().bottom<HH+4;$mini.classList.toggle('on',show);
+  if(show){const bg=h.querySelector('.big');$mini.querySelector('.ml').textContent=h.querySelector('.hl').textContent;$mini.querySelector('.mh').textContent=h.querySelector('.hm').textContent;
+    const mv=$mini.querySelector('.mv');mv.textContent=bg.textContent;mv.classList.toggle('ok',bg.classList.contains('ok'));mv.classList.toggle('bad',bg.classList.contains('bad'))}}
+window.addEventListener('scroll',updMini,{passive:true});window.addEventListener('resize',()=>{setHH();updMini()});
+build();renderItems();setHH();refresh();
 const flush=()=>LS.set('mmc.cur',S);window.addEventListener('pagehide',flush);document.addEventListener('visibilitychange',()=>{if(document.hidden)flush()});
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 </script>

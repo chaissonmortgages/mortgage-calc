@@ -1,5 +1,5 @@
 // Network first so the installed app always picks up the newest version; cache is the offline fallback.
-const C='mmc-v2';
+const C='mmc-v3';
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','jspdf.min.js'])))});
 self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});
 self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;
