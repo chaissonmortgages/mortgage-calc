@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d1117">
+<meta name="robots" content="noindex,nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<title>Mortgage Calc</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--card2:#1c2330;--bd:#2a3240;--tx:#e6edf3;--mu:#8b949e;--ac:#f28c28;--ac2:#4c8dff;--ok:#3fb950;--bad:#f85149;--warn:#d29922}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.35 system-ui,-apple-system,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--bd)}
+header .ttl{flex:1;min-width:0;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header .ttl span{color:var(--ac);font-size:14px;margin-left:6px}
+button{font:inherit;color:var(--tx);background:var(--card2);border:1px solid var(--bd);border-radius:10px;padding:8px 12px}
+button:active{filter:brightness(1.3)}
+button.pri{background:var(--ac);border-color:var(--ac);color:#111;font-weight:600}
+main{padding:10px 10px 90px}
+.tab{display:none}.tab.on{display:block}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;overflow-x:auto;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1 0 auto;border:0;border-radius:0;background:none;color:var(--mu);padding:13px 7px;font-size:12.5px}
+nav button.on{color:var(--ac);box-shadow:inset 0 3px 0 var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:10px}
+.hero{background:linear-gradient(160deg,#1d2a44,#161b22)}
+.big{font-size:32px;font-weight:700;letter-spacing:-.5px}
+.lbl{color:var(--mu);font-size:13px}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--bd)}
+.kv:last-child{border-bottom:0}
+.kv b{font-weight:600;text-align:right}
+h3{margin:2px 0 8px;font-size:14px;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.fld{padding:8px 0;border-bottom:1px solid var(--bd)}
+.fld:last-child{border-bottom:0}
+.frow{display:flex;align-items:center;gap:8px}
+.frow label{flex:1;min-width:0;color:var(--tx);font-size:14px}
+.inbox{display:flex;align-items:center;background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:0 8px;width:46%;max-width:170px}
+.inbox:focus-within{border-color:var(--ac)}
+.inbox .pre,.inbox .unit{color:var(--mu);font-size:14px}
+input.num{flex:1;min-width:0;width:100%;background:none;border:0;color:var(--tx);font:inherit;font-size:16px;padding:8px 4px;text-align:right;outline:none}
+select{font:inherit;font-size:15px;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:8px;max-width:60%}
+input[type=range]{width:100%;margin:10px 0 2px;accent-color:var(--ac);height:22px}
+.relink{display:none;padding:2px 8px;font-size:13px;color:var(--ac2);border-color:transparent;background:none}
+.relink.show{display:inline-block}
+.seg{display:flex;border:1px solid var(--bd);border-radius:9px;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:6px 14px;background:var(--bg);color:var(--mu)}
+.seg button.on{background:var(--ac);color:#111;font-weight:600}
+.hint{color:var(--mu);font-size:12px;margin-top:2px;text-align:right}
+.tog{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd)}
+.tog input{width:22px;height:22px;accent-color:var(--ac)}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:13px;font-weight:700}
+.badge.ok{background:#12351d}.badge.bad{background:#3d1416}
+.warn{background:#2e2410;border:1px solid #5c4813;color:#f0c45c;border-radius:10px;padding:8px 10px;font-size:13px;margin-bottom:10px;white-space:pre-line}
+.note{color:var(--mu);font-size:12px;margin-top:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid2 .card{padding:10px;margin:0}
+.grid2 .inbox{width:100%;max-width:none}
+.grid2 .frow{flex-wrap:wrap}
+.grid2 .frow label{flex:1 1 60%;font-size:13px;color:var(--mu)}
+.grid2 select{max-width:100%;width:100%;font-size:13px}
+.diff{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.diff div{background:var(--bg);border-radius:10px;padding:8px}
+.diff b{display:block;font-size:18px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{padding:5px 3px;text-align:right;border-bottom:1px solid var(--bd)}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mu);font-weight:600}
+.item{display:flex;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--bd)}
+.item input.nm{flex:1;min-width:0;background:none;border:0;color:var(--tx);font:inherit;font-size:14px;outline:none}
+.item .inbox{width:40%}
+.item .x{padding:4px 10px;color:var(--bad);background:none;border-color:transparent}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.sheet{position:fixed;inset:0;z-index:10;background:rgba(0,0,0,.6);display:flex;align-items:flex-end}
+.sheet.hidden{display:none}
+.sheet .panel{background:var(--card);width:100%;max-height:88vh;overflow:auto;border-radius:18px 18px 0 0;padding:14px 14px calc(20px + env(safe-area-inset-bottom))}
+.sheet .phead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.sheet .phead b{font-size:18px}
+.srow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.srow span{flex:1}
+.srow input.sn{width:90px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font:inherit;font-size:16px;padding:6px;text-align:right}
+.save{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.save div{flex:1;min-width:0}
+.save small{color:var(--mu)}
+.txt{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:9px;color:var(--tx);font:inherit;font-size:16px;padding:10px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <div class="ttl"><b>Mortgage Calc</b><span id="scnName"></span></div>
+  <button id="btnSaves">Saves</button>
+  <button id="btnSet" aria-label="Settings">&#9881;</button>
+</header>
+<main id="main"></main>
+<nav id="nav"></nav>
+<div id="sheet" class="sheet hidden"><div class="panel" id="panel"></div></div>
+
+<script>
+'use strict';
+/* ---------- storage ---------- */
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+          set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- settings ---------- */
+const DEF_CLOSING=[['Legal / notary',1500],['Home inspection',500],['Appraisal',400],['Title insurance',250],['Tax / strata adjustments',0],['Moving',0]];
+const DEF_SET={buffer:2,floor:5.25,ovOn:false,ovRate:7.5,insGDS:39,insTDS:44,convGDS:44,convTDS:44,heat:100,strataPct:50,
+  rentMethod:'add',rentAdd:80,rentOff:50,prem85:2.8,prem90:3.1,prem95:4.0,surcharge:0.2,compound:'semi',closing:DEF_CLOSING};
+let SET=Object.assign({},DEF_SET,LS.get('mmc.set',{}));
+
+/* ---------- scenario ---------- */
+const DEF_S=()=>({name:'',price:800000,downMode:'pct',downPct:20,downAmt:160000,rate:4.29,amort:25,term:5,freq:'monthly',
+  income:150000,debts:0,ptax:3000,heat:100,strata:0,rent:0,
+  fthb:false,newBuild:false,gstOn:true,gstAmt:0,gstRebate:0,closing:SET.closing.map(([n,a])=>({n,a})),
+  reqLoan:0,gdsLim:0,tdsLim:0,
+  cA_loan:0,cA_rate:0,cA_amort:0,cA_term:0,cA_freq:'monthly',cB_loan:0,cB_rate:0,cB_amort:0,cB_term:0,cB_freq:'monthly',
+  rValue:0,rBal:500000,rCurRate:5.29,rMonths:36,rRemAmort:20,rCurPmt:0,rPen:'greater',rComp:3.79,rPenMan:0,
+  rRate:0,rAmort:0,rLTV:80,rNew:0,rDebts:0,rDebtPmt:0,rRoll:true,rFees:0,
+  own:{},sched:false,tab:'pay'});
+let S=Object.assign(DEF_S(),LS.get('mmc.cur',{}));
+if(!S.own)S.own={};
+
+/* linked fields: follow these until edited by hand */
+const DEFS={
+  heat:()=>SET.heat,
+  gdsLim:()=>deal().insured?SET.insGDS:SET.convGDS,
+  tdsLim:()=>deal().insured?SET.insTDS:SET.convTDS,
+  reqLoan:()=>deal().loan,
+  cA_loan:()=>deal().loan,cA_rate:()=>S.rate,cA_amort:()=>S.amort,cA_term:()=>S.term,cA_freq:()=>S.freq,
+  cB_loan:()=>v('cA_loan'),cB_rate:()=>v('cA_rate'),cB_amort:()=>v('cA_amort'),cB_term:()=>v('cA_term'),cB_freq:()=>v('cA_freq'),
+  rValue:()=>S.price,rRate:()=>S.rate,rAmort:()=>S.amort,
+  rNew:()=>Math.max(0,v('rValue')*v('rLTV')/100),
+  rCurPmt:()=>pmt(v('rBal'),v('rCurRate'),v('rRemAmort'),12),
+  gstAmt:()=>S.price*0.05
+};
+function v(k){return (DEFS[k]&&!S.own[k])?DEFS[k]():S[k]}
+
+/* ---------- field definitions ---------- */
+const FD={
+  price:{l:'Purchase price',t:'$',min:100000,max:3000000,st:5000},
+  downPct:{l:'Down payment',t:'%',min:5,max:50,st:0.5},
+  downAmt:{l:'Down payment',t:'$',min:0,max:1000000,st:1000,mx:()=>S.price},
+  rate:{l:'Interest rate',t:'%',min:0.5,max:12,st:0.05},
+  amort:{l:'Amortization',t:'yrs',min:5,max:35,st:1},
+  term:{l:'Term',t:'yrs',min:1,max:10,st:1},
+  income:{l:'Gross annual income',t:'$',min:20000,max:600000,st:1000},
+  debts:{l:'Monthly debt payments',t:'$',min:0,max:5000,st:25},
+  ptax:{l:'Property tax (yearly)',t:'$',min:0,max:15000,st:100},
+  heat:{l:'Heat / utilities (monthly)',t:'$',min:0,max:500,st:10},
+  strata:{l:'Strata fee (monthly)',t:'$',min:0,max:1500,st:10},
+  rent:{l:'Rental income (monthly)',t:'$',min:0,max:6000,st:50},
+  gdsLim:{l:'GDS limit',t:'%',min:30,max:60,st:0.5},
+  tdsLim:{l:'TDS limit',t:'%',min:30,max:60,st:0.5},
+  reqLoan:{l:'Mortgage amount',t:'$',min:50000,max:3000000,st:5000},
+  gstAmt:{l:'GST (5%)',t:'$',min:0,max:150000,st:500,ns:1},
+  gstRebate:{l:'GST rebate',t:'$',min:0,max:50000,st:500,ns:1},
+  cA_loan:{l:'Mortgage',t:'$',min:50000,max:3000000,st:5000},cB_loan:{l:'Mortgage',t:'$',min:50000,max:3000000,st:5000},
+  cA_rate:{l:'Rate',t:'%',min:0.5,max:12,st:0.05},cB_rate:{l:'Rate',t:'%',min:0.5,max:12,st:0.05},
+  cA_amort:{l:'Amortization',t:'yrs',min:5,max:35,st:1},cB_amort:{l:'Amortization',t:'yrs',min:5,max:35,st:1},
+  cA_term:{l:'Term',t:'yrs',min:1,max:10,st:1},cB_term:{l:'Term',t:'yrs',min:1,max:10,st:1},
+  rValue:{l:'Home value',t:'$',min:100000,max:4000000,st:5000},
+  rBal:{l:'Current balance',t:'$',min:0,max:3000000,st:5000},
+  rCurRate:{l:'Current rate',t:'%',min:0.5,max:12,st:0.05},
+  rMonths:{l:'Months left in term',t:'mo',min:0,max:120,st:1},
+  rRemAmort:{l:'Remaining amortization',t:'yrs',min:1,max:30,st:1},
+  rCurPmt:{l:'Current monthly payment',t:'$',min:0,max:15000,st:10},
+  rComp:{l:'IRD comparison rate',t:'%',min:0,max:12,st:0.05},
+  rPenMan:{l:'Penalty amount',t:'$',min:0,max:100000,st:250},
+  rRate:{l:'New rate',t:'%',min:0.5,max:12,st:0.05},
+  rAmort:{l:'New amortization',t:'yrs',min:5,max:30,st:1},
+  rLTV:{l:'Max LTV',t:'%',min:50,max:95,st:1},
+  rNew:{l:'New mortgage amount',t:'$',min:0,max:3000000,st:5000,mx:()=>v('rValue')*v('rLTV')/100},
+  rDebts:{l:'Debts to pay off',t:'$',min:0,max:300000,st:500},
+  rDebtPmt:{l:'Monthly payments on those debts',t:'$',min:0,max:10000,st:25},
+  rFees:{l:'Legal / appraisal / fees',t:'$',min:0,max:10000,st:100}
+};
+const FREQ={monthly:{n:12,l:'Monthly'},semi:{n:24,l:'Semi-monthly'},biweekly:{n:26,l:'Bi-weekly'},accbi:{n:26,l:'Accelerated bi-weekly'},weekly:{n:52,l:'Weekly'},accwk:{n:52,l:'Accelerated weekly'}};
+
+/* ---------- math ---------- */
+function per(rate,n){const c=SET.compound==='monthly'?12:2;return Math.pow(1+rate/100/c,c/n)-1}
+function pmt(L,rate,yrs,n){if(!(L>0))return 0;const r=per(rate,n),N=Math.round(yrs*n);if(N<=0)return L;return r===0?L/N:L*r/(1-Math.pow(1+r,-N))}
+function pv(P,rate,yrs,n){if(!(P>0))return 0;const r=per(rate,n),N=Math.round(yrs*n);return r===0?P*N:P*(1-Math.pow(1+r,-N))/r}
+function payment(L,rate,amort,f){const m=pmt(L,rate,amort,12);if(f==='monthly')return m;if(f==='accbi')return m/2;if(f==='accwk')return m/4;return pmt(L,rate,amort,FREQ[f].n)}
+function run(L,rate,amort,term,f){
+  const n=FREQ[f].n,P=payment(L,rate,amort,f),r=per(rate,n),termN=Math.round(term*n),maxN=Math.round(amort*n)+n*10;
+  let b=L,k=0,ti=0,tp=0,ai=0,yi=0,yp=0,termBal=null;const years=[];
+  while(b>0.005&&k<maxN){const i=b*r;let pr=P-i;if(pr>b)pr=b;if(pr<=0)break;b-=pr;k++;ai+=i;yi+=i;yp+=pr;
+    if(k<=termN){ti+=i;tp+=pr}if(k===termN)termBal=b;
+    if(k%n===0||b<=0.005){years.push({y:Math.ceil(k/n),i:yi,p:yp,b:Math.max(b,0)});yi=0;yp=0}}
+  if(termBal===null)termBal=b>0.005?b:0;
+  return {P,ti,tp,termBal,ai,years,payoff:k/n}}
+function qualRate(rate){return SET.ovOn?+SET.ovRate:Math.max(+rate+ +SET.buffer,+SET.floor)}
+function pttCalc(p){return Math.min(p,2e5)*.01+Math.max(0,Math.min(p,2e6)-2e5)*.02+Math.max(0,p-2e6)*.03+Math.max(0,p-3e6)*.02}
+
+let _deal=null;
+function deal(){if(_deal)return _deal;
+  const price=+S.price||0;let down=S.downMode==='pct'?price*S.downPct/100:+S.downAmt||0;down=Math.min(Math.max(down,0),price);
+  const pct=price?down/price*100:0,base=price-down,ltv=price?base/price*100:0,insured=base>0&&pct<19.9999;
+  let premRate=0;if(insured){premRate=ltv>90?+SET.prem95:ltv>85?+SET.prem90:+SET.prem85;if(S.amort>25)premRate+= +SET.surcharge}
+  const premium=base*premRate/100,loan=base+premium;
+  const minDown=price<=5e5?price*.05:price<1.5e6?25000+(price-5e5)*.1:price*.2;
+  const w=[];
+  if(price>=1.5e6&&pct<20)w.push('Insured max price is under $1.5M. This price needs 20% down.');
+  else if(down<minDown-1)w.push('Below minimum down payment of '+$(minDown)+' ('+(minDown/price*100).toFixed(2)+'%).');
+  if(insured&&S.amort>30)w.push('Insured deals max out at 30 years.');
+  else if(insured&&S.amort>25)w.push('30-year insured: first-time buyer or new build only. +'+SET.surcharge+'% premium added.');
+  return _deal={price,down,pct,base,ltv,insured,premRate,premium,loan,minDown,warn:w.join('\n')}}
+
+function ratios(loan,rate,amort){
+  const q=qualRate(rate),qp=pmt(loan,q,amort,12),tax=(+v('ptax')||0)/12,heat=+v('heat')||0,str=(+v('strata')||0)*SET.strataPct/100,
+        debts=+v('debts')||0,rent=+v('rent')||0,baseInc=(+v('income')||0)/12;
+  let inc=baseInc,off=0,add=0;
+  if(rent>0){if(SET.rentMethod==='add'){add=rent*SET.rentAdd/100;inc+=add}else off=rent*SET.rentOff/100}
+  const housing=Math.max(0,qp+tax+heat+str-off);
+  const gds=inc>0?housing/inc*100:0,tds=inc>0?(housing+debts)/inc*100:0,gl=+v('gdsLim'),tl=+v('tdsLim');
+  const maxPI=Math.min(gl/100*inc,tl/100*inc-debts)-(tax+heat+str)+off,maxLoan=pv(Math.max(0,maxPI),q,amort,12);
+  const needG=housing/(gl/100),needT=(housing+debts)/(tl/100),need=Math.max(needG,needT)-add;
+  return {q,qp,tax,heat,str,debts,rent,off,add,inc,housing,gds,tds,gl,tl,maxLoan,needAnnual:Math.max(0,need*12),bind:needT>needG?'TDS':'GDS',
+    gOk:gds<=gl+1e-9,tOk:tds<=tl+1e-9}}
+
+/* ---------- formatting ---------- */
+function $(x){if(!isFinite(x))return '-';return (x<0?'-$':'$')+Math.round(Math.abs(x)).toLocaleString('en-CA')}
+function $c(x){if(!isFinite(x))return '-';return (x<0?'-$':'$')+Math.abs(x).toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function sgn(x,f){f=f||$;return (x>0.004?'+':'')+f(x)}
+function pc(x,d){return isFinite(x)?(+x).toFixed(d==null?2:d)+'%':'-'}
+function yrs(x){const y=Math.floor(x+1e-9),m=Math.round((x-y)*12);return m===12?(y+1)+' yrs':y+' yrs'+(m?' '+m+' mo':'')}
+function fmtIn(k,x){const t=FD[k].t;if(x===''||x==null||!isFinite(x))return '';if(t==='$')return Math.round(x).toLocaleString('en-CA');return String(+(+x).toFixed(3))}
+function parse(s){s=String(s).replace(/[^0-9.\-]/g,'');const n=parseFloat(s);return isFinite(n)?n:0}
+
+/* ---------- UI builders ---------- */
+function F(k,label){const f=FD[k];const unit=f.t==='$'?'':`<span class="unit">${f.t==='yrs'?'yrs':f.t==='mo'?'mo':'%'}</span>`;
+  return `<div class="fld"><div class="frow"><label>${label||f.l}</label>${DEFS[k]?`<button class="relink" data-relink="${k}">&#8634;</button>`:''}
+  <div class="inbox">${f.t==='$'?'<span class="pre">$</span>':''}<input class="num" data-k="${k}" inputmode="decimal" autocomplete="off">${unit}</div></div>
+  ${f.ns?'':`<input type="range" data-k="${k}" min="${f.min}" max="${f.max}" step="${f.st}">`}</div>`}
+function DOWN(){return `<div class="fld" style="border-bottom:0;padding-bottom:0"><div class="frow"><label>Down payment as</label>
+  <div class="seg"><button data-dm="pct">%</button><button data-dm="amt">$</button></div></div></div>
+  <div data-show="dmPct">${F('downPct')}</div><div data-show="dmAmt">${F('downAmt')}</div><div class="hint" data-o="downHint"></div>`}
+function SEL(k,label,opts){return `<div class="fld"><div class="frow"><label>${label}</label>${DEFS[k]?`<button class="relink" data-relink="${k}">&#8634;</button>`:''}
+  <select data-k="${k}">${Object.entries(opts).map(([a,b])=>`<option value="${a}">${b}</option>`).join('')}</select></div></div>`}
+const FREQOPT=Object.fromEntries(Object.entries(FREQ).map(([a,b])=>[a,b.l]));
+function TOG(k,label){return `<label class="tog"><span>${label}</span><input type="checkbox" data-k="${k}"></label>`}
+function KV(l,o,cls){return `<div class="kv"><span class="lbl">${l}</span><b data-o="${o}" ${cls?`data-c="${o}"`:''}></b></div>`}
+function card(title,body,cls){return `<div class="card ${cls||''}">${title?`<h3>${title}</h3>`:''}${body}</div>`}
+
+const TABS=[['pay','Payment'],['stress','Stress'],['buy','Purchase'],['close','Closing'],['refi','Refi'],['inc','Income'],['cmp','Compare']];
+function build(){
+  const T={};
+  T.pay=card('',`<div class="lbl" data-o="freqLbl"></div><div class="big" data-o="pay"></div>
+     <div class="lbl">Mortgage <b data-o="loan"></b><span data-show="insured"> incl. <b data-o="prem"></b> premium (<span data-o="premRate"></span>)</span></div>`,'hero')
+    +`<div class="warn" data-show="warn" data-o="warn"></div>`
+    +card('',F('price')+DOWN()+F('rate')+F('amort')+F('term')+SEL('freq','Payment frequency',FREQOPT))
+    +card('This term (<span data-o="termY"></span>)',KV('Interest paid','tInt')+KV('Principal paid','tPrin')+KV('Balance at renewal','tBal'))
+    +card('Full amortization',KV('Total interest','aInt')+KV('Paid off in','aYrs')+KV('Monthly equivalent','mEq'))
+    +card('',`<button id="schedBtn" style="width:100%"></button><div id="sched"></div>`);
+  T.stress=card('',`<div class="frow"><div class="lbl" style="flex:1">Qualifies at <b data-o="qRate"></b></div><span class="badge" data-o="qPass" data-c="qPass"></span></div>
+     <div class="big" data-o="qPmt"></div><div class="lbl">Qualifying monthly payment (contract: <span data-o="cPmt"></span>)</div>
+     <div class="diff" style="margin-top:10px"><div><span class="lbl">GDS</span><b data-o="gds" data-c="gds"></b><span class="lbl">limit <span data-o="gl"></span></span></div>
+     <div><span class="lbl">TDS</span><b data-o="tds" data-c="tds"></b><span class="lbl">limit <span data-o="tl"></span></span></div></div>
+     <div class="note" data-o="qRule"></div>`,'hero')
+    +card('Max mortgage',KV('At qualifying rate','maxLoan')+KV('This deal','loan2')+KV('Room / short','room','c'))
+    +card('Borrower',F('income')+F('debts')+F('rent')+`<div class="note" data-show="rentOn" data-o="rentNote"></div>`)
+    +card('Property',F('ptax')+F('heat')+F('strata')+`<div class="note">Strata counted at ${'<span data-o="strataPct"></span>'} for ratios.</div>`)
+    +card('Mortgage',F('price')+DOWN()+F('rate')+F('amort'))
+    +card('Limits',F('gdsLim')+F('tdsLim')+`<div class="note" data-o="limNote"></div>`);
+  T.buy=card('',`<div class="lbl">All-in monthly</div><div class="big" data-o="allIn"></div>
+     <div class="kv"><span class="lbl">Mortgage (monthly)</span><b data-o="bPI"></b></div>
+     <div class="kv"><span class="lbl">Property tax</span><b data-o="bTax"></b></div>
+     <div class="kv"><span class="lbl">Strata</span><b data-o="bStr"></b></div>
+     <div class="kv"><span class="lbl">Heat / utilities</span><b data-o="bHeat"></b></div>
+     <div class="kv" data-show="rentOn"><span class="lbl">After rental income</span><b data-o="bNet"></b></div>`,'hero')
+    +`<div class="warn" data-show="warn" data-o="warn"></div>`
+    +card('Purchase',F('price')+DOWN()+F('rate')+F('amort'))
+    +card('Costs',F('ptax')+F('strata')+F('heat'))
+    +card('Borrower',F('income')+F('debts')+F('rent')+`<div class="note" data-show="rentOn" data-o="rentNote"></div>`)
+    +card('Summary',KV('Down payment','bDown')+`<div data-show="insured">${KV('Insurance premium','prem')}</div>`+KV('Total mortgage','loan')
+       +KV('GDS (qualifying)','gdsL','c')+KV('TDS (qualifying)','tdsL','c')+KV('Max mortgage','maxLoan')+KV('Closing costs (est.)','clTot')+KV('Cash to close','cash'));
+  T.close=card('',`<div class="lbl">Closing costs</div><div class="big" data-o="clTot"></div><div class="lbl">Cash to close incl. down payment: <b data-o="cash"></b></div>`,'hero')
+    +card('',F('price')+TOG('fthb','First-time home buyer')+TOG('newBuild','Newly built home'))
+    +card('Property transfer tax',KV('PTT','ptt')+`<div data-show="exOn">${KV('<span data-o="exLbl"></span>','ex')}</div>`+KV('PTT payable','pttNet')+`<div class="note" data-o="exNote"></div>`)
+    +`<div data-show="nb">`+card('GST (new build)',TOG('gstOn','GST payable on top of price')+`<div data-show="gstOn">${F('gstAmt')+F('gstRebate')}</div>`)+`</div>`
+    +card('Other costs',`<div id="items"></div><div class="row"><button id="addItem">+ Add item</button><button id="saveDefs">Save as my defaults</button></div>`)
+    +`<div class="note">Estimates only. Check PTT and GST with the lawyer or notary.</div>`;
+  T.refi=card('Break and save',`<div class="frow"><div style="flex:1"><div class="lbl">Net savings this term</div><div class="big" data-o="bsNet" data-c="bsNet"></div></div></div>`
+       +KV('Penalty','pen')+KV('Interest saved (rest of term)','bsSave')+KV('Payment change','bsPmt','c')+KV('Break-even','bsBE'),'hero')
+    +card('Equity takeout',`<div class="lbl">Cash out</div><div class="big" data-o="eqCash" data-c="eqCash"></div>`
+       +KV('Max mortgage (<span data-o="ltvL"></span>)','eqMax')+KV('Available equity','eqAvail')+KV('New payment','eqPmt')+KV('Old payment + debts','eqOld')+KV('Monthly change','eqChg','c'),'hero')
+    +`<div class="warn" data-show="rWarn" data-o="rWarn"></div>`
+    +card('Current mortgage',F('rValue')+F('rBal')+F('rCurRate')+F('rMonths')+F('rRemAmort')+F('rCurPmt'))
+    +card('Penalty',SEL('rPen','Type',{greater:'Fixed: greater of 3 mo / IRD','3mo':'Variable: 3 months interest',manual:'Manual'})
+       +`<div data-show="penIRD">${F('rComp')}</div><div data-show="penMan">${F('rPenMan')}</div>`+KV('3 months interest','pen3')+`<div data-show="penIRD">${KV('IRD','penI')}</div>`)
+    +card('New mortgage',F('rRate')+F('rAmort')+F('rLTV')+F('rNew')+F('rDebts')+F('rDebtPmt')+TOG('rRoll','Add penalty to new mortgage')+F('rFees'));
+  T.inc=card('',`<div class="lbl">Required income (yearly)</div><div class="big" data-o="need"></div>
+     <div class="lbl"><span data-o="needM"></span>/mo. Limited by <b data-o="bind"></b> at <b data-o="qRate"></b></div>
+     <div class="diff" style="margin-top:10px"><div><span class="lbl">Qualifying payment</span><b data-o="iqPmt"></b></div><div><span class="lbl">Housing costs</span><b data-o="iHouse"></b></div></div>
+     <div class="note" data-show="rentOn" data-o="rentNoteI"></div>`,'hero')
+    +card('',F('reqLoan')+F('rate')+F('amort'))
+    +card('Costs',F('ptax')+F('heat')+F('strata')+F('debts')+F('rent'))
+    +card('Limits',F('gdsLim')+F('tdsLim'));
+  const col=x=>card('Mortgage '+x,F('c'+x+'_loan')+F('c'+x+'_rate')+F('c'+x+'_amort')+F('c'+x+'_term')+SEL('c'+x+'_freq','Frequency',FREQOPT)
+      +`<div class="kv"><span class="lbl">Payment</span><b data-o="c${x}P"></b></div><div class="kv"><span class="lbl">Interest (term)</span><b data-o="c${x}I"></b></div>
+      <div class="kv"><span class="lbl">Principal (term)</span><b data-o="c${x}Pr"></b></div><div class="kv"><span class="lbl">Balance end</span><b data-o="c${x}B"></b></div>
+      <div class="kv"><span class="lbl">Total interest</span><b data-o="c${x}T"></b></div>`);
+  T.cmp=card('B vs A',`<div class="diff"><div><span class="lbl">Payment</span><b data-o="dP" data-c="dP"></b></div><div><span class="lbl">Interest (term)</span><b data-o="dI" data-c="dI"></b></div>
+     <div><span class="lbl">Principal (term)</span><b data-o="dPr" data-c="dPrG"></b></div><div><span class="lbl">Balance end of term</span><b data-o="dB" data-c="dB"></b></div></div>
+     <div class="note" data-o="cmpNote"></div>`,'hero')
+    +`<div class="grid2">${col('A')}${col('B')}</div>`;
+  $main.innerHTML=TABS.map(([id])=>`<section class="tab" id="t-${id}">${T[id]}</section>`).join('');
+  $nav.innerHTML=TABS.map(([id,l])=>`<button data-tab="${id}">${l}</button>`).join('');
+}
+const $main=document.getElementById('main'),$nav=document.getElementById('nav');
+
+/* ---------- compute all outputs ---------- */
+function compute(){
+  _deal=null;const d=deal(),O={},C={};
+  const R=run(d.loan,S.rate,S.amort,S.term,S.freq);
+  O.freqLbl=FREQ[S.freq].l+' payment';O.pay=$c(R.P);O.loan=$(d.loan);O.prem=$(d.premium);O.premRate=pc(d.premRate);O.insured=d.insured;
+  O.warn=d.warn;O.dmPct=S.downMode==='pct';O.dmAmt=!O.dmPct;O.downHint=O.dmPct?'= '+$(d.down):'= '+pc(d.pct);
+  O.termY=S.term+' yrs';O.tInt=$(R.ti);O.tPrin=$(R.tp);O.tBal=$(R.termBal);O.aInt=$(R.ai);O.aYrs=yrs(R.payoff);O.mEq=$c(R.P*FREQ[S.freq].n/12);
+  O._years=R.years;
+  // stress
+  const q=ratios(d.loan,S.rate,S.amort);
+  O.qRate=pc(q.q);O.qPmt=$c(q.qp);O.cPmt=$c(pmt(d.loan,S.rate,S.amort,12));O.gds=pc(q.gds);O.tds=pc(q.tds);O.gl=pc(q.gl,1);O.tl=pc(q.tl,1);
+  C.gds=q.gOk;C.tds=q.tOk;const pass=q.gOk&&q.tOk;O.qPass=pass?'PASS':'FAIL';C.qPass=pass;
+  O.qRule=SET.ovOn?'Manual stress rate from settings: '+pc(SET.ovRate)+'.':'Higher of contract + '+SET.buffer+'% or '+pc(SET.floor)+'. Change in settings (HELOC etc).';
+  O.maxLoan=$(q.maxLoan);O.loan2=$(d.loan);O.room=sgn(q.maxLoan-d.loan);C.room=q.maxLoan>=d.loan;
+  O.strataPct=SET.strataPct+'%';O.limNote=(d.insured?'Insured':'Conventional')+' default: '+(d.insured?SET.insGDS+'/'+SET.insTDS:SET.convGDS+'/'+SET.convTDS)+'. Tap the arrow to reset.';
+  O.rentOn=q.rent>0;
+  O.rentNote=SET.rentMethod==='add'?SET.rentAdd+'% of rent ('+$(q.add)+'/mo) added to income. Change method in settings.':SET.rentOff+'% of rent ('+$(q.off)+'/mo) offsets housing costs. Change method in settings.';
+  O.rentNoteI=O.rentNote+(SET.rentMethod==='add'?' Required income shown is before rent.':'');
+  // purchase
+  const pi=pmt(d.loan,S.rate,S.amort,12),tax=(+S.ptax||0)/12,str=+S.strata||0,heat=+v('heat')||0,all=pi+tax+str+heat;
+  O.allIn=$c(all);O.bPI=$c(pi);O.bTax=$c(tax);O.bStr=$c(str);O.bHeat=$c(heat);O.bNet=$c(all-(+S.rent||0));
+  O.bDown=$(d.down)+' ('+pc(d.pct,1)+')';O.gdsL=pc(q.gds)+' / '+pc(q.gl,1);O.tdsL=pc(q.tds)+' / '+pc(q.tl,1);C.gdsL=q.gOk;C.tdsL=q.tOk;
+  // closing
+  const p=+S.price||0,ptt=pttCalc(p);let f=0,nb=0;
+  if(S.fthb){if(p<=835000)f=pttCalc(Math.min(p,5e5));else if(p<860000)f=pttCalc(5e5)*(860000-p)/25000}
+  if(S.newBuild){if(p<=1.1e6)nb=ptt;else if(p<1.15e6)nb=ptt*(1.15e6-p)/5e4}
+  const ex=Math.max(f,nb);O.ptt=$(ptt);O.exOn=ex>0;O.ex='-'+$(ex);O.exLbl=nb>=f?'Newly built exemption':'First-time buyer exemption';O.pttNet=$(ptt-ex);
+  O.exNote=(S.fthb&&p>=860000?'Over $860K: no first-time buyer exemption. ':'')+(S.newBuild&&p>=1.15e6?'Over $1.15M: no newly built exemption. ':'')+(S.fthb&&S.newBuild?'Can\'t combine both; using the bigger one.':'');
+  O.nb=S.newBuild;O.gstOn=S.gstOn;const gst=S.newBuild&&S.gstOn?(+v('gstAmt')||0)-(+S.gstRebate||0):0;
+  const items=S.closing.reduce((a,x)=>a+(+x.a||0),0),clTot=ptt-ex+gst+items;O.clTot=$(clTot);O.cash=$(clTot+d.down);
+  // refi
+  const val=+v('rValue'),bal=+v('rBal'),cr=+v('rCurRate'),mo=+v('rMonths'),rem=+v('rRemAmort'),nr=+v('rRate');
+  const p3=bal*cr/100/4,ird=bal*Math.max(0,cr-(+S.rComp))/100*mo/12,pen=S.rPen==='manual'?+S.rPenMan:S.rPen==='3mo'?p3:Math.max(p3,ird);
+  O.pen3=$(p3);O.penI=$(ird);O.pen=$(pen);O.penIRD=S.rPen==='greater';O.penMan=S.rPen==='manual';
+  const oR=run(bal,cr,rem,mo/12,'monthly'),nR=run(bal,nr,rem,mo/12,'monthly'),saved=oR.ti-nR.ti,net=saved-pen-(+S.rFees||0);
+  O.bsSave=$(saved);O.bsNet=sgn(net);C.bsNet=net>=0;const pchg=pmt(bal,nr,rem,12)-(+v('rCurPmt'));O.bsPmt=sgn(pchg,$c)+'/mo';C.bsPmt=pchg<=0;
+  const perMo=mo>0?saved/mo:0;O.bsBE=perMo>0?Math.ceil((pen+(+S.rFees||0))/perMo)+' months'+(((pen+(+S.rFees||0))/perMo)>mo?' (past term end)':''):'Never';
+  const max=val*v('rLTV')/100,nw=+v('rNew'),eqCash=nw-bal-(+S.rDebts||0)-(S.rRoll?pen:0);
+  O.ltvL=pc(v('rLTV'),0);O.eqMax=$(max);O.eqAvail=$(max-bal);O.eqCash=$(eqCash);C.eqCash=eqCash>=0;
+  const np=pmt(nw,nr,+v('rAmort'),12),op=(+v('rCurPmt'))+(+S.rDebtPmt||0);O.eqPmt=$c(np);O.eqOld=$c(op);O.eqChg=sgn(np-op,$c)+'/mo';C.eqChg=np<=op;
+  const rw=[];if(nw>max+1)rw.push('New mortgage is over '+pc(v('rLTV'),0)+' of value.');if(eqCash<0)rw.push('New mortgage doesn\'t cover balance, debts and penalty.');O.rWarn=rw.join('\n');
+  // required income
+  const qi=ratios(+v('reqLoan'),S.rate,S.amort);O.need=$(qi.needAnnual);O.needM=$(qi.needAnnual/12);O.bind=qi.bind;O.iqPmt=$c(qi.qp);O.iHouse=$c(qi.housing);
+  // compare
+  const A=run(+v('cA_loan'),+v('cA_rate'),+v('cA_amort'),+v('cA_term'),v('cA_freq')),B=run(+v('cB_loan'),+v('cB_rate'),+v('cB_amort'),+v('cB_term'),v('cB_freq'));
+  for(const [x,r] of [['A',A],['B',B]]){O['c'+x+'P']=$c(r.P);O['c'+x+'I']=$(r.ti);O['c'+x+'Pr']=$(r.tp);O['c'+x+'B']=$(r.termBal);O['c'+x+'T']=$(r.ai)}
+  const nz=(x,t,good)=>Math.abs(x)<t?undefined:good;O.dP=sgn(B.P-A.P,$c);C.dP=nz(B.P-A.P,.005,B.P<A.P);O.dI=sgn(B.ti-A.ti);C.dI=nz(B.ti-A.ti,.5,B.ti<A.ti);O.dPr=sgn(B.tp-A.tp);C.dPrG=nz(B.tp-A.tp,.5,B.tp>A.tp);O.dB=sgn(B.termBal-A.termBal);C.dB=nz(B.termBal-A.termBal,.5,B.termBal<A.termBal);
+  O.cmpNote=(v('cA_freq')!==v('cB_freq')?'Different frequencies: payment difference is per payment. ':'')+(+v('cA_term')!==+v('cB_term')?'Different terms: term totals cover different periods.':'');
+  return {O,C}}
+
+/* ---------- render ---------- */
+let saveT=null;
+function refresh(){
+  const {O,C}=compute();
+  document.querySelectorAll('[data-k]').forEach(el=>{const k=el.dataset.k;
+    if(el.type==='checkbox'){el.checked=!!S[k];return}
+    if(el.tagName==='SELECT'){el.value=v(k);return}
+    const x=v(k);
+    if(el.type==='range'){const f=FD[k];if(f.mx)el.max=Math.max(f.min,Math.round(f.mx()));el.value=x;return}
+    if(el===document.activeElement)return;el.value=fmtIn(k,x)});
+  document.querySelectorAll('[data-relink]').forEach(b=>b.classList.toggle('show',!!S.own[b.dataset.relink]));
+  document.querySelectorAll('[data-o]').forEach(el=>{const o=O[el.dataset.o];if(typeof o==='string')el.textContent=o});
+  document.querySelectorAll('[data-c]').forEach(el=>{const c=C[el.dataset.c];el.classList.toggle('ok',c===true);el.classList.toggle('bad',c===false)});
+  document.querySelectorAll('[data-show]').forEach(el=>{el.hidden=!O[el.dataset.show]});
+  document.querySelectorAll('[data-dm]').forEach(b=>b.classList.toggle('on',(b.dataset.dm==='pct')===(S.downMode==='pct')));
+  document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===S.tab));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id==='t-'+S.tab));
+  document.getElementById('schedBtn').textContent=S.sched?'Hide yearly schedule':'Show yearly schedule';
+  document.getElementById('sched').innerHTML=S.sched?`<table><tr><th>Yr</th><th>Interest</th><th>Principal</th><th>Balance</th></tr>${O._years.map(y=>`<tr><td>${y.y}</td><td>${$(y.i)}</td><td>${$(y.p)}</td><td>${$(y.b)}</td></tr>`).join('')}</table>`:'';
+  document.getElementById('scnName').textContent=S.name||'';
+  clearTimeout(saveT);saveT=setTimeout(()=>LS.set('mmc.cur',S),250);
+}
+function renderItems(){document.getElementById('items').innerHTML=S.closing.map((x,i)=>`<div class="item"><input class="nm" data-in="${i}" value="${esc(x.n)}">
+  <div class="inbox"><span class="pre">$</span><input class="num" data-ia="${i}" inputmode="decimal" value="${Math.round(+x.a||0).toLocaleString('en-CA')}"></div><button class="x" data-ix="${i}">&times;</button></div>`).join('')}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+function setVal(k,x){
+  if(k==='downPct'){S.downPct=x;S.downAmt=S.price*x/100}
+  else if(k==='downAmt'){S.downAmt=x;S.downPct=S.price?x/S.price*100:0}
+  else if(k==='price'){S.price=x;if(S.downMode==='pct')S.downAmt=x*S.downPct/100;else S.downPct=x?S.downAmt/x*100:0}
+  else S[k]=x;
+  if(DEFS[k])S.own[k]=true;
+}
+
+/* ---------- events ---------- */
+document.addEventListener('input',e=>{const el=e.target;
+  if(el.dataset.in!=null){S.closing[+el.dataset.in].n=el.value;LS.set('mmc.cur',S);return}
+  if(el.dataset.ia!=null){S.closing[+el.dataset.ia].a=parse(el.value);refresh();return}
+  if(el.dataset.s!=null){setSetting(el);return}
+  const k=el.dataset.k;if(!k||el.type==='checkbox'||el.tagName==='SELECT')return;
+  setVal(k,el.type==='range'?parseFloat(el.value):parse(el.value));refresh()});
+document.addEventListener('change',e=>{const el=e.target;
+  if(el.dataset.s!=null){setSetting(el);return}
+  const k=el.dataset.k;if(!k)return;
+  if(el.type==='checkbox'){S[k]=el.checked;refresh()}else if(el.tagName==='SELECT'){S[k]=el.value;if(DEFS[k])S.own[k]=true;refresh()}});
+document.addEventListener('focusout',e=>{if(e.target.classList&&e.target.classList.contains('num'))setTimeout(refresh,0)});
+document.addEventListener('focusin',e=>{const el=e.target;if(el.classList&&el.classList.contains('num'))setTimeout(()=>{try{el.select()}catch(_){}},0)});
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.tab){S.tab=b.dataset.tab;refresh();window.scrollTo(0,0);return}
+  if(b.dataset.relink){delete S.own[b.dataset.relink];refresh();return}
+  if(b.dataset.dm){if(S.downMode!==b.dataset.dm){S.downMode=b.dataset.dm}refresh();return}
+  if(b.dataset.ix!=null){S.closing.splice(+b.dataset.ix,1);renderItems();refresh();return}
+  if(b.id==='addItem'){S.closing.push({n:'New item',a:0});renderItems();refresh();return}
+  if(b.id==='saveDefs'){SET.closing=S.closing.map(x=>[x.n,+x.a||0]);LS.set('mmc.set',SET);b.textContent='Saved';setTimeout(()=>b.textContent='Save as my defaults',1200);return}
+  if(b.id==='schedBtn'){S.sched=!S.sched;refresh();return}
+  if(b.id==='btnSet'){openSettings();return}
+  if(b.id==='btnSaves'){openSaves();return}
+  if(b.dataset.close!=null){closeSheet();return}
+  if(b.id==='doSave'){doSave();return}
+  if(b.dataset.load){loadSave(b.dataset.load);return}
+  if(b.dataset.del){delSave(b.dataset.del);return}
+  if(b.id==='newScn'){if(confirm('Start a new blank scenario? Unsaved changes are lost.')){const t=S.tab;S=DEF_S();S.tab=t;renderItems();closeSheet();refresh()}return}
+  if(b.id==='resetSet'){if(confirm('Reset all settings to defaults?')){SET=Object.assign({},DEF_SET);LS.set('mmc.set',SET);openSettings();refresh()}return}
+});
+document.getElementById('sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeSheet()});
+
+/* ---------- sheets ---------- */
+const $panel=document.getElementById('panel');
+function openSheet(html){$panel.innerHTML=html;document.getElementById('sheet').classList.remove('hidden')}
+function closeSheet(){document.getElementById('sheet').classList.add('hidden')}
+function sNum(k,l,u){return `<div class="srow"><span>${l}</span><input class="sn" data-s="${k}" inputmode="decimal" value="${SET[k]}">${u||''}</div>`}
+function openSettings(){openSheet(`<div class="phead"><b>Settings</b><button data-close>Done</button></div>
+  <h3 style="margin-top:12px">Stress test</h3>${sNum('buffer','Contract rate +','%')}${sNum('floor','Or minimum rate','%')}
+  <label class="tog"><span>Manual stress rate (HELOC etc.)</span><input type="checkbox" data-s="ovOn" ${SET.ovOn?'checked':''}></label>${sNum('ovRate','Manual rate','%')}
+  <h3 style="margin-top:14px">Ratio limits</h3>${sNum('insGDS','Insured GDS','%')}${sNum('insTDS','Insured TDS','%')}${sNum('convGDS','Conventional GDS','%')}${sNum('convTDS','Conventional TDS','%')}
+  ${sNum('heat','Default heat','$/mo')}${sNum('strataPct','Strata counted at','%')}
+  <h3 style="margin-top:14px">Rental income</h3><div class="srow"><span>Method</span><select data-s="rentMethod"><option value="add" ${SET.rentMethod==='add'?'selected':''}>Add to income</option><option value="off" ${SET.rentMethod==='off'?'selected':''}>Offset</option></select></div>
+  ${sNum('rentAdd','Add to income at','%')}${sNum('rentOff','Offset at','%')}
+  <h3 style="margin-top:14px">Insurance premiums</h3>${sNum('prem85','80.01 to 85% LTV','%')}${sNum('prem90','85.01 to 90% LTV','%')}${sNum('prem95','90.01 to 95% LTV','%')}${sNum('surcharge','Over 25 yr surcharge','%')}
+  <h3 style="margin-top:14px">Math</h3><div class="srow"><span>Compounding</span><select data-s="compound"><option value="semi" ${SET.compound==='semi'?'selected':''}>Semi-annual (fixed)</option><option value="monthly" ${SET.compound==='monthly'?'selected':''}>Monthly (variable)</option></select></div>
+  <div class="row" style="margin-top:14px"><button id="resetSet">Reset settings</button></div>`)}
+function setSetting(el){const k=el.dataset.s;SET[k]=el.type==='checkbox'?el.checked:el.tagName==='SELECT'?el.value:parse(el.value);LS.set('mmc.set',SET);refresh()}
+function saves(){return LS.get('mmc.saves',{})}
+function openSaves(){const sv=saves(),names=Object.keys(sv).sort((a,b)=>sv[b].t-sv[a].t);
+  openSheet(`<div class="phead"><b>Saved scenarios</b><button data-close>Done</button></div>
+  <div class="row"><input class="txt" id="saveName" placeholder="Client name" value="${esc(S.name||'')}"></div>
+  <div class="row"><button class="pri" id="doSave" style="flex:1">Save</button><button id="newScn">New blank</button></div>
+  <div style="margin-top:10px">${names.length?names.map(n=>`<div class="save"><div><b>${esc(n)}</b><br><small>${new Date(sv[n].t).toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'})} &middot; ${$(sv[n].s.price)}</small></div>
+  <button data-load="${esc(n)}">Open</button><button class="x" data-del="${esc(n)}" style="color:var(--bad)">&times;</button></div>`).join(''):'<div class="note">Nothing saved yet.</div>'}</div>`)}
+function doSave(){const n=document.getElementById('saveName').value.trim();if(!n){document.getElementById('saveName').focus();return}
+  const sv=saves();if(sv[n]&&n!==S.name&&!confirm('Overwrite "'+n+'"?'))return;S.name=n;sv[n]={t:Date.now(),s:JSON.parse(JSON.stringify(S))};LS.set('mmc.saves',sv);refresh();LS.set('mmc.cur',S);openSaves()}
+function loadSave(n){const sv=saves();if(!sv[n])return;const t=S.tab;S=Object.assign(DEF_S(),JSON.parse(JSON.stringify(sv[n].s)));S.tab=t;S.name=n;renderItems();closeSheet();refresh()}
+function delSave(n){if(!confirm('Delete "'+n+'"?'))return;const sv=saves();delete sv[n];LS.set('mmc.saves',sv);openSaves()}
+
+build();renderItems();refresh();
+const flush=()=>LS.set('mmc.cur',S);window.addEventListener('pagehide',flush);document.addEventListener('visibilitychange',()=>{if(document.hidden)flush()});
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+</script>
+</body>
+</html>
